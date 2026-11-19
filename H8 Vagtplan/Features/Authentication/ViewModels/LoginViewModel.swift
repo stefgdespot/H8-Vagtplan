@@ -1,6 +1,6 @@
 import Foundation
 
-/// Styrer Log ind skærmen. Det er viewets logik: Kalder service, styrer loading og fejl.
+/// Styrer Log ind skærmen. Det er skærmens logik: Kalder service, styrer loading og fejl.
 @MainActor
 @Observable
 final class LoginViewModel {
