@@ -1,6 +1,7 @@
 import Foundation
 import FirebaseAuth
 
+/// Appens egne Auth fejl med danske fejlbeskeder.
 enum AuthError: LocalizedError {
     case wrongPassword
     case userNotFound
@@ -12,6 +13,7 @@ enum AuthError: LocalizedError {
     case tooManyRequests
     case unknown
 
+    /// Laver en Firebase fejl om til en AuthError.
     init(error: Error) {
         let nsError = error as NSError
 

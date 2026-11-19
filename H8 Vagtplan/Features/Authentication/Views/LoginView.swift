@@ -1,10 +1,11 @@
 import SwiftUI
 
+/// Log ind skærmen. Skærmen viser felterne og knappen, mens LoginViewModel står for skærmens logik.
 struct LoginView: View {
     @State private var loginViewModel: LoginViewModel
     
-    init(authService: AuthServiceProtocol = AuthService()) {
-        _loginViewModel = State(initialValue: LoginViewModel(authService: authService))
+    init(sessionStore: SessionStore, authService: AuthServiceProtocol = AuthService()) {
+        _loginViewModel = State(initialValue: LoginViewModel(sessionStore: sessionStore, authService: authService))
     }
     
     var body: some View {
@@ -95,10 +96,12 @@ struct LoginView: View {
     }
 }
 
+/// Preview som logger en ind successfuldt med Mock logik.
 #Preview("Success") {
-    LoginView(authService: MockAuthService())
+    LoginView(sessionStore: SessionStore(), authService: MockAuthService())
 }
 
+/// Preview som kaster en fejl med Mock logik.
 #Preview("Error") {
-    LoginView(authService: MockAuthService(error: AuthError.invalidCredential))
+    LoginView(sessionStore: SessionStore(), authService: MockAuthService(error: AuthError.invalidCredential))
 }

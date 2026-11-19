@@ -1,12 +1,6 @@
-//
-//  LoginViewModel.swift
-//  H8 Vagtplan
-//
-//  Created by Stefan Gusatovic on 19/11/2026.
-//
-
 import Foundation
 
+/// Styrer Log ind skærmen. Det er viewets logik: Kalder service, styrer loading og fejl.
 @MainActor
 @Observable
 final class LoginViewModel {
@@ -16,6 +10,7 @@ final class LoginViewModel {
         var id: Self { self }
     }
     
+    private let sessionStore: SessionStore
     private let authService: AuthServiceProtocol
     
     var email = ""
@@ -23,16 +18,19 @@ final class LoginViewModel {
     private(set) var isLoading = false
     var alert: AlertType?
     
+    /// Knappen kan kun trykkes, når felterne er udfyldt, og den ikke loader.
     var isFormValid: Bool {
         !email.isEmpty &&
         !password.isEmpty &&
         !isLoading
     }
     
-    init(authService: AuthServiceProtocol = AuthService()) {
+    init(sessionStore: SessionStore, authService: AuthServiceProtocol = AuthService()) {
+        self.sessionStore = sessionStore
         self.authService = authService
     }
     
+    /// Logger brugeren ind og lader SessionStore bestemme, hvilken skærm der skal vises bagefter.
     func login() async {
         isLoading = true
         
@@ -40,6 +38,7 @@ final class LoginViewModel {
         
         do {
             try await authService.login(email: email, password: password)
+            sessionStore.loadSession()
         } catch {
             alert = .error(error.localizedDescription)
         }
