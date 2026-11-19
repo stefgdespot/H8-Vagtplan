@@ -64,7 +64,7 @@ struct LoginView: View {
                     HStack(spacing: 4) {
                         Text("Har du ikke en konto?")
 
-                        NavigationLink(value: true) {
+                        NavigationLink(value: AuthRoute.createAccount) {
                             Text("Opret konto")
                         }
                         .foregroundStyle(.main)
@@ -85,6 +85,12 @@ struct LoginView: View {
                     Alert(title: Text("Fejl"), message: Text(message))
                 }
             }
+            .navigationDestination(for: AuthRoute.self) { route in
+                switch route {
+                case .createAccount:
+                    EmptyView()
+                }
+            }
         }
     }
 }
@@ -94,5 +100,5 @@ struct LoginView: View {
 }
 
 #Preview("Error") {
-    LoginView(authService: MockAuthService(error: URLError(.notConnectedToInternet)))
+    LoginView(authService: MockAuthService(error: AuthError.invalidCredential))
 }

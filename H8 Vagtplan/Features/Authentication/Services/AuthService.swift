@@ -10,7 +10,10 @@ import FirebaseAuth
 
 nonisolated final class AuthService: AuthServiceProtocol {
     func login(email: String, password: String) async throws {
-        let result = try await Auth.auth().signIn(withEmail: email, password: password)
-        print("DEBUG: Logged in with user email: \(result.user.email ?? "No email")")
+        do {
+            try await Auth.auth().signIn(withEmail: email, password: password)
+        } catch {
+            throw AuthError(error: error)
+        }
     }
 }
