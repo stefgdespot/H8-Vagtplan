@@ -25,4 +25,13 @@ nonisolated final class MockAuthService: AuthServiceProtocol {
         
         print("DEBUG: Logged in")
     }
+    
+    /// Lader som om brugeren logger ud
+    func logout() throws {
+        if let error {
+            throw error
+        }
+        
+        print("DEBUG: Logged out")
+    }
 }

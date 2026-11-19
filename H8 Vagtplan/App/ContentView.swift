@@ -12,7 +12,7 @@ struct ContentView: View {
             case .login:
                 LoginView(sessionStore: sessionStore)
             case .tab:
-                Text("Tab")
+                ProfileView(sessionStore: sessionStore)
             }
         }
         .onAppear {

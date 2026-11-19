@@ -1,7 +1,7 @@
 import Foundation
 import FirebaseAuth
 
-/// Står for login med Firebase Authentication
+/// Står for login og log ud med Firebase Authentication
 nonisolated final class AuthService: AuthServiceProtocol {
     
     /// Logger brugeren ind med email og adgangskode.
@@ -10,6 +10,15 @@ nonisolated final class AuthService: AuthServiceProtocol {
             try await Auth.auth().signIn(withEmail: email, password: password)
         } catch {
             // Laver Firebase fejlen om til appens egen AuthError og kaster fejlen.
+            throw AuthError(error: error)
+        }
+    }
+    
+    /// Logger brugeren ud
+    func logout() throws {
+        do {
+            try Auth.auth().signOut()
+        } catch {
             throw AuthError(error: error)
         }
     }
