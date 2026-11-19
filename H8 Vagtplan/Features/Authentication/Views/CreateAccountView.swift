@@ -104,5 +104,5 @@ struct CreateAccountView: View {
 
 /// Preview som kaster en fejl med Mock logik.
 #Preview("Error") {
-    CreateAccountView(sessionStore: SessionStore(), authService: MockAuthService(error: AuthError.invalidCredential))
+    CreateAccountView(sessionStore: SessionStore(), authService: MockAuthService(error: AuthError.invalidEmail))
 }

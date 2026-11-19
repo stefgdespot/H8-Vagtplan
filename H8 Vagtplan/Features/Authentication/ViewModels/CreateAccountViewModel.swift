@@ -39,7 +39,7 @@ final class CreateAccountViewModel {
         defer { isLoading = false }
         
         do {
-            
+            try await authService.createAccount(name: name, email: email, password: password)
             sessionStore.loadSession()
         } catch {
             alert = .error(error.localizedDescription)

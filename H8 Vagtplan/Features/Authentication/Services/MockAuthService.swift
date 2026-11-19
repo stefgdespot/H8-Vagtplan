@@ -23,7 +23,7 @@ nonisolated final class MockAuthService: AuthServiceProtocol {
             throw error
         }
         
-        print("DEBUG: Logged in")
+        print("DEBUG: Logged in with email: \(email), and password: \(password)")
     }
     
     /// Lader som om brugeren logger ud
@@ -33,5 +33,14 @@ nonisolated final class MockAuthService: AuthServiceProtocol {
         }
         
         print("DEBUG: Logged out")
+    }
+    
+    /// Lader som om brugeren opretter en konto
+    func createAccount(name: String, email: String, password: String) async throws {
+        if let error {
+            throw error
+        }
+        
+        print("DEBUG: Created user with name: \(name), with email: \(email), and password: \(password)")
     }
 }

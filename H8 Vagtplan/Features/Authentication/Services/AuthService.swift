@@ -22,4 +22,8 @@ nonisolated final class AuthService: AuthServiceProtocol {
             throw AuthError(error: error)
         }
     }
+    
+    func createAccount(name: String, email: String, password: String) async throws {
+        
+    }
 }
