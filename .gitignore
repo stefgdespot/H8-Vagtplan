@@ -1,0 +1,11 @@
+// Skjult fil, som Mac laver i hver mappe. Den husker kun, hvordan mappen ser ud i Finder.
+.DS_Store
+
+// Mine Xcode-indstillinger, fx breakpoints.
+xcuserdata/
+
+// Build-cache, som Xcode laver, når appen bygges
+DerivedData/
+
+// Hvad Xcode viser lige nu, fx hvilke filer der er åbne og hvor man sidst har klikket henne.
+*.xcuserstate
