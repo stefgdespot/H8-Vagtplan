@@ -1,7 +1,11 @@
 import SwiftUI
 
 struct LoginView: View {
-    @State private var loginViewModel = LoginViewModel()
+    @State private var loginViewModel: LoginViewModel
+    
+    init(authService: AuthServiceProtocol = AuthService()) {
+        _loginViewModel = State(initialValue: LoginViewModel(authService: authService))
+    }
     
     var body: some View {
         NavigationStack {
@@ -23,40 +27,72 @@ struct LoginView: View {
                 
                 Section("Email") {
                     TextField("Skriv din email", text: $loginViewModel.email)
+                        .keyboardType(.emailAddress)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
                 }
                 
                 Section("Adgangskode") {
-                    TextField("Skriv din adgangskode", text: $loginViewModel.password)
+                    SecureField("Skriv din adgangskode", text: $loginViewModel.password)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
                 }
                 
-                Button {
+                VStack(spacing: 30) {
+                    Button {
+                        Task {
+                            await loginViewModel.login()
+                        }
+                    } label: {
+                        Group {
+                            if loginViewModel.isLoading {
+                                ProgressView()
+                                    .tint(.white)
+                            } else {
+                                Text("Log ind")
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .frame(height: 50)
+                        .font(.headline)
+                        .background(.main, in: .capsule)
+                        .foregroundStyle(.white)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(!loginViewModel.isFormValid)
+                    
+                    HStack(spacing: 4) {
+                        Text("Har du ikke en konto?")
 
-                } label: {
-                    Text("Log ind")
-                }
-                .buttonStyle(.plain)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .frame(height: 50)
-                .font(.headline)
-                .background(.main, in: .capsule)
-                .foregroundStyle(.white)
-                .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
-                
-                HStack(spacing: 4) {
-                    Text("Har du ikke en konto?")
-
-                    Text("Opret konto")
+                        NavigationLink(value: true) {
+                            Text("Opret konto")
+                        }
                         .foregroundStyle(.main)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .navigationLinkIndicatorVisibility(.hidden)
                 }
-                .frame(maxWidth: .infinity, alignment: .center)
+                .listRowInsets(EdgeInsets())
+                .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
             }
             .scrollBounceBehavior(.basedOnSize)
+            .scrollDismissesKeyboard(.immediately)
+            .disabled(loginViewModel.isLoading)
+            .alert(item: $loginViewModel.alert) { alert in
+                switch alert {
+                case .error(let message):
+                    Alert(title: Text("Fejl"), message: Text(message))
+                }
+            }
         }
     }
 }
 
-#Preview {
-    LoginView()
+#Preview("Success") {
+    LoginView(authService: MockAuthService())
+}
+
+#Preview("Error") {
+    LoginView(authService: MockAuthService(error: URLError(.notConnectedToInternet)))
 }
