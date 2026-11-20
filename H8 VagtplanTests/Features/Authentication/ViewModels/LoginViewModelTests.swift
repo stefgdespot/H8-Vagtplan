@@ -1,10 +1,3 @@
-//
-//  LoginViewModelTests.swift
-//  H8 VagtplanTests
-//
-//  Created by Stefan Gusatovic on 20/11/2026.
-//
-
 import Testing
 import Foundation
 @testable import H8_Vagtplan
