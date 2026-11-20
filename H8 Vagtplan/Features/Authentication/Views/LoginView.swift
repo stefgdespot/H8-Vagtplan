@@ -4,8 +4,11 @@ import SwiftUI
 struct LoginView: View {
     @State private var loginViewModel: LoginViewModel
     
+    private let sessionStore: SessionStore
+    
     init(sessionStore: SessionStore, authService: AuthServiceProtocol = AuthService()) {
         _loginViewModel = State(initialValue: LoginViewModel(sessionStore: sessionStore, authService: authService))
+        self.sessionStore = sessionStore
     }
     
     var body: some View {
@@ -89,7 +92,7 @@ struct LoginView: View {
             .navigationDestination(for: AuthRoute.self) { route in
                 switch route {
                 case .createAccount:
-                    EmptyView()
+                    CreateAccountView(sessionStore: sessionStore)
                 }
             }
         }
