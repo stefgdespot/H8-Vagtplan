@@ -1,10 +1,3 @@
-//
-//  MockAuthService.swift
-//  H8 Vagtplan
-//
-//  Created by Stefan Gusatovic on 19/11/2026.
-//
-
 import Foundation
 
 /// Ligesom AuthService, men med Mock logik. Den snakker ikke med Firebase, så man kan teste login uden at kalde Firebase.

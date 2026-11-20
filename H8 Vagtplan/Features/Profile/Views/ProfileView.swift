@@ -1,10 +1,3 @@
-//
-//  ProfileView.swift
-//  H8 Vagtplan
-//
-//  Created by Stefan Gusatovic on 19/11/2026.
-//
-
 import SwiftUI
 
 /// Profil skærmen. Skærmen viser brugerens oplysninger og Log ud knappen.
