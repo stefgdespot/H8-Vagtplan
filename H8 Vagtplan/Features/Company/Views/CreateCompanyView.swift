@@ -1,7 +1,11 @@
 import SwiftUI
 
 struct CreateCompanyView: View {
-    @State private var createCompanyViewModel = CreateCompanyViewModel()
+    @State private var createCompanyViewModel: CreateCompanyViewModel
+    
+    init(companyService: CompanyServiceProtocol = CompanyService()) {
+        _createCompanyViewModel = State(initialValue: CreateCompanyViewModel(companyService: companyService))
+    }
     
     var body: some View {
         Form {
@@ -31,7 +35,9 @@ struct CreateCompanyView: View {
             }
             
             Button {
-                
+                Task {
+                    await createCompanyViewModel.createCompany()
+                }
             } label: {
                 Group {
                     if createCompanyViewModel.isLoading {
@@ -55,9 +61,19 @@ struct CreateCompanyView: View {
         .scrollDismissesKeyboard(.immediately)
         .disabled(createCompanyViewModel.isLoading)
         .navigationBarBackButtonHidden(createCompanyViewModel.isLoading)
+        .alert(item: $createCompanyViewModel.alert) { alert in
+            switch alert {
+            case .error(let message):
+                Alert(title: Text("Fejl"), message: Text(message))
+            }
+        }
     }
 }
 
-#Preview {
-    CreateCompanyView()
+#Preview("Success") {
+    CreateCompanyView(companyService: MockCompanyService())
+}
+
+#Preview("Failed") {
+    CreateCompanyView(companyService: MockCompanyService(error: FirestoreError.unknown))
 }
