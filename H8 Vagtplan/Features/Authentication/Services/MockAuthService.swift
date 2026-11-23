@@ -1,6 +1,6 @@
 import Foundation
 
-/// Ligesom AuthService, men med Mock logik. Den snakker ikke med Firebase, så man kan teste login uden at kalde Firebase.
+/// Ligesom AuthService, men med Mock logik. Den snakker ikke med Firebase, så man kan teste authentication uden at kalde Firebase.
 /// Det bruges i Previews og tests.
 nonisolated final class MockAuthService: AuthServiceProtocol {
     /// Fejlen, som login skal kaste. Er den nil, er login successfuld.

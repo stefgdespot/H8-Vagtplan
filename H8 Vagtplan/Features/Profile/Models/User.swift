@@ -6,4 +6,6 @@ struct User: Identifiable, Codable {
     let name: String
     let email: String
     let createdAt: Date
+    
+    static let mockUser = User(name: "John Doe", email: "johndoe@mail.com", createdAt: .now)
 }
