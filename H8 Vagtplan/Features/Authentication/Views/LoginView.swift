@@ -97,10 +97,10 @@ struct LoginView: View {
 
 /// Preview som logger en ind successfuldt med Mock logik.
 #Preview("Success") {
-    LoginView(sessionStore: SessionStore(), authService: MockAuthService())
+    LoginView(sessionStore: SessionStore(userStore: UserStore(userService: MockUserService())), authService: MockAuthService())
 }
 
 /// Preview som kaster en fejl med Mock logik.
 #Preview("Error") {
-    LoginView(sessionStore: SessionStore(), authService: MockAuthService(error: AuthError.invalidCredential))
+    LoginView(sessionStore: SessionStore(userStore: UserStore(userService: MockUserService(error: FirestoreError.unknown))), authService: MockAuthService(error: AuthError.invalidCredential))
 }

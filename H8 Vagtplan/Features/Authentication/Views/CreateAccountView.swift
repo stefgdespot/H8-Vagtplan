@@ -95,10 +95,10 @@ struct CreateAccountView: View {
 
 /// Preview som opretter en konto successfuldt med Mock logik.
 #Preview("Success") {
-    CreateAccountView(sessionStore: SessionStore(), authService: MockAuthService())
+    CreateAccountView(sessionStore: SessionStore(userStore: UserStore(userService: MockUserService())), authService: MockAuthService())
 }
 
 /// Preview som kaster en fejl med Mock logik.
 #Preview("Error") {
-    CreateAccountView(sessionStore: SessionStore(), authService: MockAuthService(error: AuthError.invalidEmail))
+    CreateAccountView(sessionStore: SessionStore(userStore: UserStore(userService: MockUserService(error: FirestoreError.unknown))), authService: MockAuthService(error: AuthError.invalidEmail))
 }

@@ -10,15 +10,17 @@ struct ProfileView: View {
     
     var body: some View {
         Button("Log ud") {
-            profileViewModel.logout()
+            Task {
+                await profileViewModel.logout()
+            }
         }
     }
 }
 
 #Preview("Logout Success") {
-    ProfileView(sessionStore: SessionStore(), authService: MockAuthService())
+    ProfileView(sessionStore: SessionStore(userStore: UserStore(userService: MockUserService())), authService: MockAuthService())
 }
 
 #Preview("Logout Error") {
-    ProfileView(sessionStore: SessionStore(), authService: MockAuthService(error: AuthError.unknown))
+    ProfileView(sessionStore: SessionStore(userStore: UserStore(userService: MockUserService(error: FirestoreError.unknown))), authService: MockAuthService(error: AuthError.unknown))
 }

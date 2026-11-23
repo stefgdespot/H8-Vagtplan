@@ -68,7 +68,9 @@ struct CompanyWelcomeView: View {
             .scrollBounceBehavior(.basedOnSize)
             .safeAreaInset(edge: .bottom) {
                 Button("Log ud") {
-                    companyWelcomeViewModel.logout()
+                    Task {
+                        await companyWelcomeViewModel.logout()
+                    }
                 }
                 .font(.headline)
                 .foregroundStyle(.red)
@@ -92,9 +94,9 @@ struct CompanyWelcomeView: View {
 }
 
 #Preview("Success logout") {
-    CompanyWelcomeView(sessionStore: SessionStore(), authService: MockAuthService())
+    CompanyWelcomeView(sessionStore: SessionStore(userStore: UserStore(userService: MockUserService())), authService: MockAuthService())
 }
 
 #Preview("Failed logout") {
-    CompanyWelcomeView(sessionStore: SessionStore(), authService: MockAuthService(error: AuthError.unknown))
+    CompanyWelcomeView(sessionStore: SessionStore(userStore: UserStore(userService: MockUserService(error: FirestoreError.unknown))), authService: MockAuthService(error: AuthError.unknown))
 }

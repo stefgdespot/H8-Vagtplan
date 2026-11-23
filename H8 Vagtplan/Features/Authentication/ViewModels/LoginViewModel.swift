@@ -38,7 +38,7 @@ final class LoginViewModel {
         
         do {
             try await authService.login(email: email, password: password)
-            sessionStore.loadSession()
+            try await sessionStore.loadSession()
         } catch {
             alert = .error(error.localizedDescription)
         }
