@@ -15,11 +15,7 @@ struct LoginView: View {
         NavigationStack {
             Form {
                 VStack(spacing: 16) {
-                    Image("logo")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 80, height: 80)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                    AppLogo()
                     
                     Text("Log ind")
                         .font(.largeTitle)

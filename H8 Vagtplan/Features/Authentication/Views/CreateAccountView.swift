@@ -13,11 +13,7 @@ struct CreateAccountView: View {
     var body: some View {
         Form {
             VStack(spacing: 16) {
-                Image("logo")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 80, height: 80)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                AppLogo()
                 
                 Text("Opret konto")
                     .font(.largeTitle)
