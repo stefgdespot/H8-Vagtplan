@@ -22,7 +22,6 @@ struct LoginView: View {
                         .fontWeight(.bold)
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
-                .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
                 
                 Section("Email") {
@@ -63,6 +62,7 @@ struct LoginView: View {
                     
                     HStack(spacing: 4) {
                         Text("Har du ikke en konto?")
+                            .foregroundStyle(.gray)
 
                         NavigationLink(value: AuthRoute.createAccount) {
                             Text("Opret konto")

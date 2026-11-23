@@ -20,7 +20,6 @@ struct CreateAccountView: View {
                     .fontWeight(.bold)
             }
             .frame(maxWidth: .infinity, alignment: .center)
-            .listRowSeparator(.hidden)
             .listRowBackground(Color.clear)
             
             Section("Navn") {
@@ -67,6 +66,7 @@ struct CreateAccountView: View {
                 
                 HStack(spacing: 4) {
                     Text("Har du allerede en konto?")
+                        .foregroundStyle(.gray)
                     
                     Button("Log ind") {
                         dismiss()

@@ -24,7 +24,6 @@ struct CompanyWelcomeView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
-                .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
                 
                 Section {
@@ -84,7 +83,7 @@ struct CompanyWelcomeView: View {
             .navigationDestination(for: CompanyWelcomeRoute.self) { route in
                 switch route {
                 case .createCompany:
-                    EmptyView()
+                    CreateCompanyView()
                 case .joinCompany:
                     EmptyView()
                 }
