@@ -1,13 +1,12 @@
-//
-//  CompanyWelcomeView.swift
-//  H8 Vagtplan
-//
-//  Created by Stefan Gusatovic on 23/11/2026.
-//
-
 import SwiftUI
 
 struct CompanyWelcomeView: View {
+    @State private var companyWelcomeViewModel: CompanyWelcomeViewModel
+    
+    init(sessionStore: SessionStore, authService: AuthServiceProtocol = AuthService()) {
+        _companyWelcomeViewModel = State(initialValue: CompanyWelcomeViewModel(sessionStore: sessionStore, authService: authService))
+    }
+    
     var body: some View {
         NavigationStack {
             List {
@@ -69,10 +68,16 @@ struct CompanyWelcomeView: View {
             .scrollBounceBehavior(.basedOnSize)
             .safeAreaInset(edge: .bottom) {
                 Button("Log ud") {
-                    
+                    companyWelcomeViewModel.logout()
                 }
                 .font(.headline)
                 .foregroundStyle(.red)
+            }
+            .alert(item: $companyWelcomeViewModel.alert) { alert in
+                switch alert {
+                case .error(let message):
+                    Alert(title: Text("Fejl"), message: Text(message))
+                }
             }
             .navigationDestination(for: CompanyWelcomeRoute.self) { route in
                 switch route {
@@ -86,6 +91,10 @@ struct CompanyWelcomeView: View {
     }
 }
 
-#Preview {
-    CompanyWelcomeView()
+#Preview("Success logout") {
+    CompanyWelcomeView(sessionStore: SessionStore(), authService: MockAuthService())
+}
+
+#Preview("Failed logout") {
+    CompanyWelcomeView(sessionStore: SessionStore(), authService: MockAuthService(error: AuthError.unknown))
 }
