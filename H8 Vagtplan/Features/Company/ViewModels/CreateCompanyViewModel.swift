@@ -9,13 +9,15 @@ final class CreateCompanyViewModel {
         var id: Self { self }
     }
     
+    private let userStore: UserStore
     private let companyService: CompanyServiceProtocol
     
     var name = ""
     private(set) var isLoading = false
     var alert: AlertType?
     
-    init(companyService: CompanyServiceProtocol = CompanyService()) {
+    init(userStore: UserStore, companyService: CompanyServiceProtocol = CompanyService()) {
+        self.userStore = userStore
         self.companyService = companyService
     }
     
@@ -25,7 +27,7 @@ final class CreateCompanyViewModel {
         defer { isLoading = false }
         
         do {
-            try await companyService.createCompany()
+            userStore.currentUser = try await companyService.createCompany(name: name, user: userStore.currentUser)
         } catch {
             alert = .error(error.localizedDescription)
         }

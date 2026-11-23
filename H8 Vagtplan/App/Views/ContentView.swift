@@ -26,6 +26,7 @@ struct ContentView: View {
                 ProfileView(sessionStore: sessionStore)
             }
         }
+        .environment(userStore)
         .task {
             /// Kalder ContentViewModels loadSession, når skærmen vises, for at finde ud af om man er logget ind eller ikke logget ind.
             await contentViewModel.loadSession()

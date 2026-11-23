@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct CompanyWelcomeView: View {
+    @Environment(UserStore.self) private var userStore
+    
     @State private var companyWelcomeViewModel: CompanyWelcomeViewModel
     
     init(sessionStore: SessionStore, authService: AuthServiceProtocol = AuthService()) {
@@ -83,7 +85,7 @@ struct CompanyWelcomeView: View {
             .navigationDestination(for: CompanyWelcomeRoute.self) { route in
                 switch route {
                 case .createCompany:
-                    CreateCompanyView()
+                    CreateCompanyView(userStore: userStore)
                 case .joinCompany:
                     EmptyView()
                 }
@@ -93,9 +95,15 @@ struct CompanyWelcomeView: View {
 }
 
 #Preview("Success logout") {
-    CompanyWelcomeView(sessionStore: SessionStore(userStore: UserStore(userService: MockUserService())), authService: MockAuthService())
+    let userStore = UserStore(userService: MockUserService())
+    
+    CompanyWelcomeView(sessionStore: SessionStore(userStore: userStore), authService: MockAuthService())
+        .environment(userStore)
 }
 
 #Preview("Failed logout") {
-    CompanyWelcomeView(sessionStore: SessionStore(userStore: UserStore(userService: MockUserService(error: FirestoreError.unknown))), authService: MockAuthService(error: AuthError.unknown))
+    let userStore = UserStore(userService: MockUserService(error: FirestoreError.unknown))
+    
+    CompanyWelcomeView(sessionStore: SessionStore(userStore: userStore), authService: MockAuthService(error: AuthError.unknown))
+        .environment(userStore)
 }

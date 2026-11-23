@@ -3,8 +3,8 @@ import SwiftUI
 struct CreateCompanyView: View {
     @State private var createCompanyViewModel: CreateCompanyViewModel
     
-    init(companyService: CompanyServiceProtocol = CompanyService()) {
-        _createCompanyViewModel = State(initialValue: CreateCompanyViewModel(companyService: companyService))
+    init(userStore: UserStore, companyService: CompanyServiceProtocol = CompanyService()) {
+        _createCompanyViewModel = State(initialValue: CreateCompanyViewModel(userStore: userStore, companyService: companyService))
     }
     
     var body: some View {
@@ -71,9 +71,12 @@ struct CreateCompanyView: View {
 }
 
 #Preview("Success") {
-    CreateCompanyView(companyService: MockCompanyService())
+    let userStore = UserStore(userService: MockUserService())
+    userStore.currentUser = .mockUser
+    
+    return CreateCompanyView(userStore: userStore, companyService: MockCompanyService())
 }
 
 #Preview("Failed") {
-    CreateCompanyView(companyService: MockCompanyService(error: FirestoreError.unknown))
+    CreateCompanyView(userStore: UserStore(userService: MockUserService(error: FirestoreError.unknown)), companyService: MockCompanyService(error: FirestoreError.unknown))
 }
