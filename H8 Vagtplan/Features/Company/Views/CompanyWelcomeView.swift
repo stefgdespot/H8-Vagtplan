@@ -5,8 +5,11 @@ struct CompanyWelcomeView: View {
     
     @State private var companyWelcomeViewModel: CompanyWelcomeViewModel
     
+    private let sessionStore: SessionStore
+    
     init(sessionStore: SessionStore, authService: AuthServiceProtocol = AuthService()) {
         _companyWelcomeViewModel = State(initialValue: CompanyWelcomeViewModel(sessionStore: sessionStore, authService: authService))
+        self.sessionStore = sessionStore
     }
     
     var body: some View {
@@ -85,7 +88,7 @@ struct CompanyWelcomeView: View {
             .navigationDestination(for: CompanyWelcomeRoute.self) { route in
                 switch route {
                 case .createCompany:
-                    CreateCompanyView(userStore: userStore)
+                    CreateCompanyView(sessionStore: sessionStore, userStore: userStore)
                 case .joinCompany:
                     EmptyView()
                 }

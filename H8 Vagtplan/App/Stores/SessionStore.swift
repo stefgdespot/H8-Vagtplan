@@ -9,6 +9,7 @@ final class SessionStore {
         case splash
         case login
         case tab
+        case companyWelcome
     }
     
     private let userStore: UserStore
@@ -23,7 +24,12 @@ final class SessionStore {
     func loadSession() async throws {
         if Auth.auth().currentUser != nil {
             try await userStore.fetchUser()
-            screen = .tab
+            
+            if userStore.currentUser?.companyId != nil {
+                screen = .tab
+            } else {
+                screen = .companyWelcome
+            }
         } else {
             screen = .login
         }

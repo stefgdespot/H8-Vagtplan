@@ -3,8 +3,8 @@ import SwiftUI
 struct CreateCompanyView: View {
     @State private var createCompanyViewModel: CreateCompanyViewModel
     
-    init(userStore: UserStore, companyService: CompanyServiceProtocol = CompanyService()) {
-        _createCompanyViewModel = State(initialValue: CreateCompanyViewModel(userStore: userStore, companyService: companyService))
+    init(sessionStore: SessionStore, userStore: UserStore, companyService: CompanyServiceProtocol = CompanyService()) {
+        _createCompanyViewModel = State(initialValue: CreateCompanyViewModel(sessionStore: sessionStore, userStore: userStore, companyService: companyService))
     }
     
     var body: some View {
@@ -54,6 +54,7 @@ struct CreateCompanyView: View {
                 .foregroundStyle(.white)
             }
             .buttonStyle(.plain)
+            .disabled(!createCompanyViewModel.isFormValid)
             .listRowInsets(EdgeInsets())
             .listRowBackground(Color.clear)
         }
@@ -74,9 +75,11 @@ struct CreateCompanyView: View {
     let userStore = UserStore(userService: MockUserService())
     userStore.currentUser = .mockUser
     
-    return CreateCompanyView(userStore: userStore, companyService: MockCompanyService())
+    return CreateCompanyView(sessionStore: SessionStore(userStore: userStore), userStore: userStore, companyService: MockCompanyService())
 }
 
 #Preview("Failed") {
-    CreateCompanyView(userStore: UserStore(userService: MockUserService(error: FirestoreError.unknown)), companyService: MockCompanyService(error: FirestoreError.unknown))
+    let userStore = UserStore(userService: MockUserService(error: FirestoreError.unknown))
+    
+    return CreateCompanyView(sessionStore: SessionStore(userStore: userStore), userStore: userStore, companyService: MockCompanyService(error: FirestoreError.unknown))
 }

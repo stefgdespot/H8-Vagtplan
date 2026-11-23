@@ -24,6 +24,8 @@ struct ContentView: View {
                 LoginView(sessionStore: sessionStore)
             case .tab:
                 ProfileView(sessionStore: sessionStore)
+            case .companyWelcome:
+                CompanyWelcomeView(sessionStore: sessionStore)
             }
         }
         .environment(userStore)
