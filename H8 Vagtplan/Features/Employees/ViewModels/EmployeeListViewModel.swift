@@ -8,6 +8,7 @@ final class EmployeeListViewModel {
     
     private(set) var employees: [User] = []
     private(set) var loadingState: LoadingState<[User]> = .loading
+    private(set) var hasLoaded = false
     
     init(userStore: UserStore, employeeService: EmployeeServiceProtocol = EmployeeService()) {
         self.userStore = userStore
@@ -20,11 +21,19 @@ final class EmployeeListViewModel {
             return
         }
         
+        guard !hasLoaded else { return }
+        
         do {
             employees = try await employeeService.fetchEmployees(companyId: companyId)
             loadingState = .loaded(employees)
+            hasLoaded = true
         } catch {
             loadingState = .failed(error.localizedDescription)
         }
+    }
+    
+    func refresh() async {
+        hasLoaded = false
+        await fetchEmployees()
     }
 }

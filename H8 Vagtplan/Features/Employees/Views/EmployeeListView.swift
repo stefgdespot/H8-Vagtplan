@@ -67,6 +67,9 @@ struct EmployeeListView: View {
                 }
             }
         }
+        .refreshable {
+            await employeeListViewModel.refresh()
+        }
         .navigationTitle("Medarbejdere")
         .navigationBarTitleDisplayMode(.large)
         .task {
