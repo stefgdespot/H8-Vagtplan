@@ -7,6 +7,7 @@ enum FirestoreError: LocalizedError {
     case unavailable
     case deadlineExceeded
     case resourceExhausted
+    case companyNotFound
     case unknown
 
     init(error: Error) {
@@ -45,6 +46,8 @@ enum FirestoreError: LocalizedError {
             return "Det tog for lang tid. Prøv igen."
         case .resourceExhausted:
             return "For mange forespørgsler. Vent lidt og prøv igen."
+        case .companyNotFound:
+            return "Der findes ingen virksomhed med den kode."
         case .unknown:
             return "Noget gik galt. Prøv igen."
         }

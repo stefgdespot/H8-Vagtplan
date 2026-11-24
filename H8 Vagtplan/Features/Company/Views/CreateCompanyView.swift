@@ -72,10 +72,7 @@ struct CreateCompanyView: View {
 }
 
 #Preview("Success") {
-    let userStore = UserStore(userService: MockUserService())
-    userStore.currentUser = .mockUser
-    
-    return CreateCompanyView(sessionStore: SessionStore(), userStore: userStore, companyService: MockCompanyService())
+    return CreateCompanyView(sessionStore: SessionStore(), userStore: UserStore(userService: MockUserService()), companyService: MockCompanyService())
 }
 
 #Preview("Failed") {

@@ -3,8 +3,8 @@ import SwiftUI
 struct JoinCompanyView: View {
     @State private var joinCompanyViewModel: JoinCompanyViewModel
     
-    init(companyService: CompanyServiceProtocol = CompanyService()) {
-        _joinCompanyViewModel = State(initialValue: JoinCompanyViewModel(companyService: companyService))
+    init(sessionStore: SessionStore, userStore: UserStore, companyService: CompanyServiceProtocol = CompanyService()) {
+        _joinCompanyViewModel = State(initialValue: JoinCompanyViewModel(sessionStore: sessionStore, userStore: userStore, companyService: companyService))
     }
     
     var body: some View {
@@ -34,7 +34,9 @@ struct JoinCompanyView: View {
             }
             
             Button {
-                
+                Task {
+                    await joinCompanyViewModel.joinCompany()
+                }
             } label: {
                 Group {
                     if joinCompanyViewModel.isLoading {
@@ -69,9 +71,17 @@ struct JoinCompanyView: View {
 }
 
 #Preview("Success") {
-    JoinCompanyView(companyService: MockCompanyService())
+    let userStore = UserStore(userService: MockUserService())
+    
+    return JoinCompanyView(sessionStore: SessionStore(userStore: userStore), userStore: userStore, companyService: MockCompanyService())
 }
 
 #Preview("Failed") {
-    JoinCompanyView(companyService: MockCompanyService(error: FirestoreError.unknown))
+    let userStore = UserStore(userService: MockUserService())
+    
+    return JoinCompanyView(
+        sessionStore: SessionStore(userStore: userStore),
+        userStore: userStore,
+        companyService: MockCompanyService(error: FirestoreError.unknown)
+    )
 }
