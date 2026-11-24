@@ -10,7 +10,9 @@ struct ProfileView: View {
     
     var body: some View {
         Button("Log ud") {
-            profileViewModel.logout()
+            Task {
+                await profileViewModel.logout()
+            }
         }
     }
 }

@@ -15,18 +15,13 @@ struct LoginView: View {
         NavigationStack {
             Form {
                 VStack(spacing: 16) {
-                    Image("logo")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 80, height: 80)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                    AppLogo()
                     
                     Text("Log ind")
                         .font(.largeTitle)
                         .fontWeight(.bold)
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
-                .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
                 
                 Section("Email") {
@@ -67,6 +62,7 @@ struct LoginView: View {
                     
                     HStack(spacing: 4) {
                         Text("Har du ikke en konto?")
+                            .foregroundStyle(.gray)
 
                         NavigationLink(value: AuthRoute.createAccount) {
                             Text("Opret konto")

@@ -6,9 +6,9 @@ import Foundation
 struct ProfileViewModelTests {
     /// Unit test for at der ikke vises en alert når man logger ud successfuldt.
     @Test("Logout succeeds without alert")
-    func logoutSucceedsWithoutAlert() {
+    func logoutSucceedsWithoutAlert() async {
         let vm = ProfileViewModel(sessionStore: SessionStore(), authService: MockAuthService())
-        vm.logout()
+        await vm.logout()
         
         #expect(vm.alert == nil)
     }
@@ -18,7 +18,7 @@ struct ProfileViewModelTests {
     func loginShowsAlertOnError() async {
         let error = AuthError.unknown
         let vm = ProfileViewModel(sessionStore: SessionStore(), authService: MockAuthService(error: error))
-        vm.logout()
+        await vm.logout()
         
         #expect(vm.alert == .error(error.localizedDescription))
     }

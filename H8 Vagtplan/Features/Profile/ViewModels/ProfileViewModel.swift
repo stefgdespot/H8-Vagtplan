@@ -21,10 +21,10 @@ final class ProfileViewModel {
     }
     
     /// Logger brugeren ud og lader SessionStore sende brugeren tilbage til Log ind skærmen.
-    func logout() {
+    func logout() async {
         do {
             try authService.logout()
-            sessionStore.loadSession()
+            try await sessionStore.loadSession()
         } catch {
             alert = .error(error.localizedDescription)
         }

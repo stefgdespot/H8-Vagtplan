@@ -36,7 +36,7 @@ nonisolated final class AuthService: AuthServiceProtocol {
         }
         
         // Laver en User værdi
-        let user = User(name: name, email: email, createdAt: .now)
+        let user = User(name: name, email: email, createdAt: .now, companyId: nil, role: nil)
         
         // Opretter kontoen i Firebase Firestore med samme id som resultatets user har fået. Kaster fejl og prøver at slette kontoen i Firebase Authentication, hvis det fejler.
         do {

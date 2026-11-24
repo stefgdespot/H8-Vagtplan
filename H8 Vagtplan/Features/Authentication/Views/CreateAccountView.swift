@@ -13,18 +13,13 @@ struct CreateAccountView: View {
     var body: some View {
         Form {
             VStack(spacing: 16) {
-                Image("logo")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 80, height: 80)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                AppLogo()
                 
                 Text("Opret konto")
                     .font(.largeTitle)
                     .fontWeight(.bold)
             }
             .frame(maxWidth: .infinity, alignment: .center)
-            .listRowSeparator(.hidden)
             .listRowBackground(Color.clear)
             
             Section("Navn") {
@@ -71,6 +66,7 @@ struct CreateAccountView: View {
                 
                 HStack(spacing: 4) {
                     Text("Har du allerede en konto?")
+                        .foregroundStyle(.gray)
                     
                     Button("Log ind") {
                         dismiss()
