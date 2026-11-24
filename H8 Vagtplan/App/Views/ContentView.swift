@@ -47,6 +47,6 @@ struct ContentView: View {
     ContentView(userService: MockUserService())
 }
 
-#Preview("Failed") {
+#Preview("Error") {
     ContentView(userService: MockUserService(error: FirestoreError.unknown))
 }
