@@ -6,9 +6,9 @@ import Foundation
 struct CompanyWelcomeViewModelTests {
     /// Unit test for at der ikke vises en alert når man logger ud successfuldt.
     @Test("Logout succeeds without alert")
-    func logoutSucceedsWithoutAlert() {
+    func logoutSucceedsWithoutAlert() async {
         let vm = CompanyWelcomeViewModel(sessionStore: SessionStore(), authService: MockAuthService())
-        vm.logout()
+        await vm.logout()
         
         #expect(vm.alert == nil)
     }
@@ -18,7 +18,7 @@ struct CompanyWelcomeViewModelTests {
     func loginShowsAlertOnError() async {
         let error = AuthError.unknown
         let vm = CompanyWelcomeViewModel(sessionStore: SessionStore(), authService: MockAuthService(error: error))
-        vm.logout()
+        await vm.logout()
         
         #expect(vm.alert == .error(error.localizedDescription))
     }

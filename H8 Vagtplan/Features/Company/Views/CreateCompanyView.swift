@@ -75,11 +75,13 @@ struct CreateCompanyView: View {
     let userStore = UserStore(userService: MockUserService())
     userStore.currentUser = .mockUser
     
-    return CreateCompanyView(sessionStore: SessionStore(userStore: userStore), userStore: userStore, companyService: MockCompanyService())
+    return CreateCompanyView(sessionStore: SessionStore(), userStore: userStore, companyService: MockCompanyService())
 }
 
 #Preview("Failed") {
-    let userStore = UserStore(userService: MockUserService(error: FirestoreError.unknown))
-    
-    return CreateCompanyView(sessionStore: SessionStore(userStore: userStore), userStore: userStore, companyService: MockCompanyService(error: FirestoreError.unknown))
+    CreateCompanyView(
+        sessionStore: SessionStore(),
+        userStore: UserStore(userService: MockUserService(error: FirestoreError.unknown)),
+        companyService: MockCompanyService(error: FirestoreError.unknown)
+    )
 }

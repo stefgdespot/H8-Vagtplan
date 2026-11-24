@@ -100,13 +100,11 @@ struct CompanyWelcomeView: View {
 #Preview("Success logout") {
     let userStore = UserStore(userService: MockUserService())
     
-    CompanyWelcomeView(sessionStore: SessionStore(userStore: userStore), authService: MockAuthService())
+    CompanyWelcomeView(sessionStore: SessionStore(), authService: MockAuthService())
         .environment(userStore)
 }
 
 #Preview("Failed logout") {
-    let userStore = UserStore(userService: MockUserService(error: FirestoreError.unknown))
-    
-    CompanyWelcomeView(sessionStore: SessionStore(userStore: userStore), authService: MockAuthService(error: AuthError.unknown))
-        .environment(userStore)
+    CompanyWelcomeView(sessionStore: SessionStore(), authService: MockAuthService(error: AuthError.unknown))
+        .environment(UserStore(userService: MockUserService(error: FirestoreError.unknown)))
 }

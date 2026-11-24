@@ -16,8 +16,8 @@ final class SessionStore {
     
     var screen: Screen = .splash
     
-    init(userStore: UserStore) {
-        self.userStore = userStore
+    init(userStore: UserStore? = nil) {
+        self.userStore = userStore ?? UserStore()
     }
     
     /// Tjekker om brugeren er logget ind, og viser den rigtige skærm.
