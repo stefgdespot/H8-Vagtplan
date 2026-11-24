@@ -14,10 +14,14 @@ nonisolated final class MockCompanyService: CompanyServiceProtocol {
             throw error
         }
         
-        guard let user else {
-            throw FirestoreError.unauthenticated
+        return .mockUser
+    }
+    
+    func joinCompany(code: String, user: User?) async throws -> User {
+        if let error {
+            throw error
         }
         
-        return User(name: user.name, email: user.email, createdAt: user.createdAt, companyId: "companyId", role: .owner)
+        return .mockUser
     }
 }

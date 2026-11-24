@@ -90,7 +90,7 @@ struct CompanyWelcomeView: View {
                 case .createCompany:
                     CreateCompanyView(sessionStore: sessionStore, userStore: userStore)
                 case .joinCompany:
-                    EmptyView()
+                    JoinCompanyView(sessionStore: sessionStore, userStore: userStore)
                 }
             }
         }

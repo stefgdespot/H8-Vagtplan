@@ -1,4 +1,5 @@
 import Testing
+import Foundation
 @testable import H8_Vagtplan
 
 @MainActor
@@ -34,16 +35,18 @@ struct CreateCompanyViewModelTests {
         #expect(vm.alert == nil)
     }
     
-    @Test("Alert shows when createCompany fails")
-    func alertShowsWhenCreateCompanyFails() async {
+    @Test("createCompany shows alert on error")
+    func createCompanyShowsAlertOnError() async {
+        let error = FirestoreError.unknown
+        
         let vm = CreateCompanyViewModel(
             sessionStore: SessionStore(),
             userStore: UserStore(),
-            companyService: MockCompanyService(error: FirestoreError.unknown)
+            companyService: MockCompanyService(error: error)
         )
         
         await vm.createCompany()
         
-        #expect(vm.alert != nil)
+        #expect(vm.alert == .error(error.localizedDescription))
     }
 }
