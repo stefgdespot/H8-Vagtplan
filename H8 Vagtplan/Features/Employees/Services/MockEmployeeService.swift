@@ -7,7 +7,7 @@ nonisolated final class MockEmployeeService: EmployeeServiceProtocol {
         self.error = error
     }
     
-    func fetchEmployees() async throws -> [User] {
+    func fetchEmployees(companyId: String) async throws -> [User] {
         if let error {
             throw error
         }

@@ -17,7 +17,7 @@ struct MainTabView: View {
                 
                 Tab("Medarbejdere", systemImage: "person.2", value: .employeeList) {
                     NavigationStack {
-                        EmployeeListView()
+                        EmployeeListView(userStore: userStore)
                     }
                 }
             }

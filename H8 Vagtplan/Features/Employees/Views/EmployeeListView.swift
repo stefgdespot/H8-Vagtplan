@@ -3,8 +3,8 @@ import SwiftUI
 struct EmployeeListView: View {
     @State private var employeeListViewModel: EmployeeListViewModel
     
-    init(employeeService: EmployeeServiceProtocol = EmployeeService()) {
-        _employeeListViewModel = State(initialValue: EmployeeListViewModel(employeeService: employeeService))
+    init(userStore: UserStore, employeeService: EmployeeServiceProtocol = EmployeeService()) {
+        _employeeListViewModel = State(initialValue: EmployeeListViewModel(userStore: userStore, employeeService: employeeService))
     }
     
     private var employeeCountText: String {
@@ -30,18 +30,22 @@ struct EmployeeListView: View {
                 }
             }
             
-            Section(employeeCountText) {
-                switch employeeListViewModel.loadingState {
-                case .loading:
+            switch employeeListViewModel.loadingState {
+            case .loading:
+                Section("Medarbejdere") {
                     ProgressView("Henter medarbejdere...")
                         .frame(maxWidth: .infinity, alignment: .center)
-                case .failed(let message):
+                }
+            case .failed(let message):
+                Section("Medarbejdere") {
                     ContentUnavailableView(
                         "Fejl",
                         systemImage: "exclamationmark.triangle",
                         description: Text(message)
                     )
-                case .loaded(let users):
+                }
+            case .loaded(let users):
+                Section(employeeCountText) {
                     if users.isEmpty {
                         ContentUnavailableView(
                             "Ingen medarbejdere",
@@ -72,13 +76,19 @@ struct EmployeeListView: View {
 }
 
 #Preview("Success") {
-    NavigationStack {
-        EmployeeListView(employeeService: MockEmployeeService())
+    let userStore = UserStore()
+    userStore.currentUser = .mockOwnerUser
+    
+    return NavigationStack {
+        EmployeeListView(userStore: userStore, employeeService: MockEmployeeService())
     }
 }
 
 #Preview("Error") {
-    NavigationStack {
-        EmployeeListView(employeeService: MockEmployeeService(error: FirestoreError.unknown))
+    let userStore = UserStore()
+    userStore.currentUser = .mockOwnerUser
+    
+    return NavigationStack {
+        EmployeeListView(userStore: userStore, employeeService: MockEmployeeService(error: FirestoreError.unknown))
     }
 }

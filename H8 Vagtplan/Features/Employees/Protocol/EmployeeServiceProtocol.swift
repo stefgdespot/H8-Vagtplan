@@ -1,5 +1,5 @@
 import Foundation
 
 protocol EmployeeServiceProtocol {
-    func fetchEmployees() async throws -> [User]
+    func fetchEmployees(companyId: String) async throws -> [User]
 }
