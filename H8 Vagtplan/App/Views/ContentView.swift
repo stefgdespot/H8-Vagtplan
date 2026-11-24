@@ -23,11 +23,12 @@ struct ContentView: View {
             case .login:
                 LoginView(sessionStore: sessionStore)
             case .tab:
-                ProfileView(sessionStore: sessionStore)
+                MainTabView()
             case .companyWelcome:
                 CompanyWelcomeView(sessionStore: sessionStore)
             }
         }
+        .environment(sessionStore)
         .environment(userStore)
         .task {
             /// Kalder ContentViewModels loadSession, når skærmen vises, for at finde ud af om man er logget ind eller ikke logget ind.

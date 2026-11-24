@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct MainTabView: View {
+    @Environment(SessionStore.self) private var sessionStore
     @Environment(UserStore.self) private var userStore
     
     @State private var selectedTab: TabItem = .dutySchedule
@@ -16,7 +17,7 @@ struct MainTabView: View {
                 
                 Tab("Medarbejdere", systemImage: "person.2", value: .employeeList) {
                     NavigationStack {
-                        Text("Medarbejdere")
+                        EmployeeListView()
                     }
                 }
             }
@@ -28,7 +29,7 @@ struct MainTabView: View {
                     }
                 }
                 
-                Tab("Ledige vagter", systemImage: "calendar.badge.clock", value: .availableShits) {
+                Tab("Ledige vagter", systemImage: "calendar.badge.plus", value: .availableShits) {
                     NavigationStack {
                         Text("Ledige vagter")
                     }
@@ -37,7 +38,7 @@ struct MainTabView: View {
             
             Tab("Profil", systemImage: "person.crop.circle", value: .profile) {
                 NavigationStack {
-                    Text("Profil")
+                    ProfileView(sessionStore: sessionStore)
                 }
             }
         }
@@ -53,6 +54,7 @@ struct MainTabView: View {
     userStore.currentUser = .mockOwnerUser
     
     return MainTabView()
+        .environment(SessionStore())
         .environment(userStore)
 }
 
@@ -61,5 +63,6 @@ struct MainTabView: View {
     userStore.currentUser = .mockEmployeeUser
     
     return MainTabView()
+        .environment(SessionStore())
         .environment(userStore)
 }
