@@ -76,7 +76,7 @@ struct JoinCompanyView: View {
     return JoinCompanyView(sessionStore: SessionStore(userStore: userStore), userStore: userStore, companyService: MockCompanyService())
 }
 
-#Preview("Failed") {
+#Preview("Error") {
     let userStore = UserStore(userService: MockUserService())
     
     return JoinCompanyView(

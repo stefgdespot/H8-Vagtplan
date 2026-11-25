@@ -1,7 +1,7 @@
 import Foundation
 import FirebaseFirestore
 
-/// Står for opret og tilmeld virksomhed med Firebase Firestore.
+/// Står for opret virksomhed, tilmeld virksomhed, hente virksomhed med Firebase Firestore.
 nonisolated final class CompanyService: CompanyServiceProtocol {
     
     /// Opretter en virksomhed i Firebase Firestore og giver brugeren et companyId og en role som chef.
@@ -62,5 +62,15 @@ nonisolated final class CompanyService: CompanyServiceProtocol {
         }
         
         return User(name: user.name, email: user.email, createdAt: user.createdAt, companyId: company.documentID, role: .employee)
+    }
+    
+    /// Henter virksomheden fra Firebase Firestore og decoder det til at være Company modellen.
+    func fetchCompany(companyId: String) async throws -> Company {
+        do {
+            let snapshot = try await Firestore.firestore().collection("companies").document(companyId).getDocument()
+            return try snapshot.data(as: Company.self)
+        } catch {
+            throw FirestoreError(error: error)
+        }
     }
 }

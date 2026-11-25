@@ -14,6 +14,6 @@ nonisolated final class MockUserService: UserServiceProtocol {
             throw error
         }
         
-        return .mockUser
+        return .mockOwnerUser
     }
 }

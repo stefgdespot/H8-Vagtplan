@@ -9,5 +9,7 @@ struct User: Identifiable, Codable {
     let companyId: String?
     let role: UserRole?
     
-    static let mockUser = User(name: "John Doe", email: "johndoe@mail.com", createdAt: .now, companyId: nil, role: .owner)
+    static let mockOwnerUser = User(name: "John Doe", email: "johndoe@mail.com", createdAt: .now, companyId: "companyId", role: .owner)
+    
+    static let mockEmployeeUser = User(name: "John Doe", email: "johndoe@mail.com", createdAt: .now, companyId: "companyId", role: .employee)
 }

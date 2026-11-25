@@ -75,7 +75,7 @@ struct CreateCompanyView: View {
     return CreateCompanyView(sessionStore: SessionStore(), userStore: UserStore(userService: MockUserService()), companyService: MockCompanyService())
 }
 
-#Preview("Failed") {
+#Preview("Error") {
     CreateCompanyView(
         sessionStore: SessionStore(),
         userStore: UserStore(userService: MockUserService(error: FirestoreError.unknown)),

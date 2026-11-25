@@ -22,7 +22,7 @@ struct CreateCompanyViewModelTests {
     @Test("Alert is nil when createCompany is success")
     func alertIsNilWhenCreateCompanyIsSuccess() async {
         let userStore = UserStore(userService: MockUserService())
-        userStore.currentUser = .mockUser
+        userStore.currentUser = .mockOwnerUser
         
         let vm = CreateCompanyViewModel(
             sessionStore: SessionStore(),

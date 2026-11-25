@@ -14,7 +14,7 @@ nonisolated final class MockCompanyService: CompanyServiceProtocol {
             throw error
         }
         
-        return .mockUser
+        return .mockOwnerUser
     }
     
     func joinCompany(code: String, user: User?) async throws -> User {
@@ -22,6 +22,14 @@ nonisolated final class MockCompanyService: CompanyServiceProtocol {
             throw error
         }
         
-        return .mockUser
+        return .mockOwnerUser
+    }
+    
+    func fetchCompany(companyId: String) async throws -> Company {
+        if let error {
+            throw error
+        }
+        
+        return .mockCompany
     }
 }
