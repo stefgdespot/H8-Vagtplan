@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct EmployeeListView: View {
+    @Environment(CompanyStore.self) private var companyStore
+    
     @State private var employeeListViewModel: EmployeeListViewModel
     
     init(userStore: UserStore, employeeService: EmployeeServiceProtocol = EmployeeService()) {
@@ -15,18 +17,26 @@ struct EmployeeListView: View {
     var body: some View {
         List {
             Section("Invitationskode") {
-                HStack {
-                    Text("X7K9Q2")
-                        .font(.headline)
-                    
-                    Spacer()
-                    
-                    Button("Del kode") {
+                switch companyStore.loadingState {
+                case .loading:
+                    ProgressView()
+                        .frame(maxWidth: .infinity, alignment: .center)
+                case .failed(let message):
+                    errorCase(message: message)
+                case .loaded(let company):
+                    HStack {
+                        Text(company.inviteCode)
+                            .font(.headline)
                         
+                        Spacer()
+                        
+                        Button("Del kode") {
+                            
+                        }
+                        .buttonStyle(.plain)
+                        .font(.headline)
+                        .foregroundStyle(.main)
                     }
-                    .buttonStyle(.plain)
-                    .font(.headline)
-                    .foregroundStyle(.main)
                 }
             }
             
@@ -38,11 +48,7 @@ struct EmployeeListView: View {
                 }
             case .failed(let message):
                 Section("Medarbejdere") {
-                    ContentUnavailableView(
-                        "Fejl",
-                        systemImage: "exclamationmark.triangle",
-                        description: Text(message)
-                    )
+                    errorCase(message: message)
                 }
             case .loaded(let users):
                 Section(employeeCountText) {
@@ -76,6 +82,14 @@ struct EmployeeListView: View {
             await employeeListViewModel.fetchEmployees()
         }
     }
+    
+    private func errorCase(message: String) -> some View {
+        ContentUnavailableView(
+            "Fejl",
+            systemImage: "exclamationmark.triangle",
+            description: Text(message)
+        )
+    }
 }
 
 #Preview("Success") {
@@ -85,6 +99,7 @@ struct EmployeeListView: View {
     return NavigationStack {
         EmployeeListView(userStore: userStore, employeeService: MockEmployeeService())
     }
+    .environment(CompanyStore(companyService: MockCompanyService()))
 }
 
 #Preview("Error") {
@@ -94,4 +109,5 @@ struct EmployeeListView: View {
     return NavigationStack {
         EmployeeListView(userStore: userStore, employeeService: MockEmployeeService(error: FirestoreError.unknown))
     }
+    .environment(CompanyStore(companyService: MockCompanyService(error: FirestoreError.unknown)))
 }

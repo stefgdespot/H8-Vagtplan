@@ -4,33 +4,36 @@ import Foundation
 @MainActor
 @Observable
 final class MainTabViewModel {
-    enum AlertType: Identifiable, Hashable {
-        case error(String)
-        
-        var id: Self { self }
-    }
-    
     private let companyStore: CompanyStore
     private let userStore: UserStore
     
     var selectedTab: TabItem = .dutySchedule
-    var alert: AlertType?
     
     init(companyStore: CompanyStore, userStore: UserStore) {
         self.companyStore = companyStore
         self.userStore = userStore
+        
+        Task {
+            await fetchCompany()
+        }
     }
     
     func fetchCompany() async {
         guard let companyId = userStore.currentUser?.companyId else {
-            alert = .error("Du er ikke tilmeldt en virksomhed.")
+            companyStore.loadingState = .failed("Du er ikke tilmeldt en virksomhed.")
             return
         }
         
+        companyStore.loadingState = .loading
+        
         do {
             try await companyStore.fetchCompany(companyId: companyId)
+            
+            if let company = companyStore.company {
+                companyStore.loadingState = .loaded(company)
+            }
         } catch {
-            alert = .error(error.localizedDescription)
+            companyStore.loadingState = .failed(error.localizedDescription)
         }
     }
 }

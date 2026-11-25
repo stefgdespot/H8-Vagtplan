@@ -52,17 +52,9 @@ struct MainTabView: View {
             }
         }
         .tint(.main)
+        .environment(companyStore)
         .onAppear {
             mainTabViewModel.selectedTab = userStore.currentUser?.role == .employee ? .myShifts : .dutySchedule
-        }
-        .task {
-            await mainTabViewModel.fetchCompany()
-        }
-        .alert(item: $mainTabViewModel.alert) { alert in
-            switch alert {
-            case .error(let message):
-                Alert(title: Text("Fejl"), message: Text(message))
-            }
         }
     }
 }
