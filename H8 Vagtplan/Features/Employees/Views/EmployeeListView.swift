@@ -30,12 +30,12 @@ struct EmployeeListView: View {
                         
                         Spacer()
                         
-                        Button("Del kode") {
-                            
+                        ShareLink(item: company.inviteCode) {
+                            Text("Del kode")
+                                .font(.headline)
+                                .foregroundStyle(.main)
                         }
                         .buttonStyle(.plain)
-                        .font(.headline)
-                        .foregroundStyle(.main)
                     }
                 }
             }
@@ -96,18 +96,26 @@ struct EmployeeListView: View {
     let userStore = UserStore()
     userStore.currentUser = .mockOwnerUser
     
+    let companyStore = CompanyStore(companyService: MockCompanyService())
+    companyStore.company = .mockCompany
+    companyStore.loadingState = .loaded(.mockCompany)
+    
     return NavigationStack {
         EmployeeListView(userStore: userStore, employeeService: MockEmployeeService())
     }
-    .environment(CompanyStore(companyService: MockCompanyService()))
+    .environment(companyStore)
 }
 
 #Preview("Error") {
     let userStore = UserStore()
     userStore.currentUser = .mockOwnerUser
     
+    let companyStore = CompanyStore(companyService: MockCompanyService())
+    companyStore.company = .mockCompany
+    companyStore.loadingState = .failed("Du har ikke adgang.")
+    
     return NavigationStack {
         EmployeeListView(userStore: userStore, employeeService: MockEmployeeService(error: FirestoreError.unknown))
     }
-    .environment(CompanyStore(companyService: MockCompanyService(error: FirestoreError.unknown)))
+    .environment(companyStore)
 }

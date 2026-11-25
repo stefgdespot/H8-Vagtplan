@@ -1,5 +1,6 @@
 import Foundation
 
+/// Står for at hente medarbejderne for virksomheden.
 @MainActor
 @Observable
 final class EmployeeListViewModel {
