@@ -1,6 +1,6 @@
 import Foundation
 
-enum ShiftAssignment: Hashable {
+enum ShiftAssignment {
     case employee
     case open
 }

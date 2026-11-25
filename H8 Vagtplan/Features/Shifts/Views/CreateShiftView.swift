@@ -19,7 +19,7 @@ struct CreateShiftView: View {
                     
                     Text("Ledig vagt")
                         .tag(ShiftAssignment.open)
-                }
+                } 
                 .pickerStyle(.segmented)
                 .labelsHidden()
 

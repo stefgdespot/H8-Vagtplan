@@ -12,12 +12,14 @@ struct DutyScheduleView: View {
                 NavigationLink(value: DutyScheduleRoute.createShift) {
                     Image(systemName: "plus")
                 }
+                .foregroundStyle(.primary)
             }
         }
         .navigationDestination(for: DutyScheduleRoute.self) { route in
             switch route {
             case .createShift:
                 CreateShiftView()
+                    .toolbar(.hidden, for: .tabBar)
             }
         }
     }
