@@ -23,7 +23,7 @@ struct ContentView: View {
             case .login:
                 LoginView(sessionStore: sessionStore)
             case .tab:
-                MainTabView()
+                MainTabView(userStore: userStore)
             case .companyWelcome:
                 CompanyWelcomeView(sessionStore: sessionStore)
             }

@@ -24,4 +24,12 @@ nonisolated final class MockCompanyService: CompanyServiceProtocol {
         
         return .mockOwnerUser
     }
+    
+    func fetchCompany(companyId: String) async throws -> Company {
+        if let error {
+            throw error
+        }
+        
+        return .mockCompany
+    }
 }
