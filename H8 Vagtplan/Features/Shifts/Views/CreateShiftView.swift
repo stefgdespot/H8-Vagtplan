@@ -1,7 +1,11 @@
 import SwiftUI
 
 struct CreateShiftView: View {
-    @State private var createShiftViewModel = CreateShiftViewModel()
+    @State private var createShiftViewModel: CreateShiftViewModel
+    
+    init(userStore: UserStore, shiftService: ShiftServiceProtocol = ShiftService()) {
+        _createShiftViewModel = State(initialValue: CreateShiftViewModel(userStore: userStore, shiftService: shiftService))
+    }
     
     var body: some View {
         Form {
@@ -18,7 +22,7 @@ struct CreateShiftView: View {
                         .tag(ShiftAssignment.employee)
                     
                     Text("Ledig vagt")
-                        .tag(ShiftAssignment.open)
+                        .tag(ShiftAssignment.available)
                 } 
                 .pickerStyle(.segmented)
                 .labelsHidden()
@@ -35,7 +39,9 @@ struct CreateShiftView: View {
             }
             
             Button {
-                
+                Task {
+                    await createShiftViewModel.createShift()
+                }
             } label: {
                 Text("Opret vagt")
                     .frame(maxWidth: .infinity, alignment: .center)
@@ -50,11 +56,29 @@ struct CreateShiftView: View {
         }
         .navigationTitle("Opret vagt")
         .navigationBarTitleDisplayMode(.large)
+        .alert(item: $createShiftViewModel.alert) { alert in
+            switch alert {
+            case .error(let message):
+                Alert(title: Text("Fejl"), message: Text(message))
+            }
+        }
     }
 }
 
-#Preview {
-    NavigationStack {
-        CreateShiftView()
+#Preview("Success") {
+    let userStore = UserStore(userService: MockUserService())
+    userStore.currentUser = .mockOwnerUser
+
+    return NavigationStack {
+        CreateShiftView(userStore: userStore, shiftService: MockShiftService())
+    }
+}
+
+#Preview("Error") {
+    let userStore = UserStore(userService: MockUserService())
+    userStore.currentUser = .mockOwnerUser
+
+    return NavigationStack {
+        CreateShiftView(userStore: userStore, shiftService: MockShiftService(error: FirestoreError.unknown))
     }
 }

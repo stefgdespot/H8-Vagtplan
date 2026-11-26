@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct DutyScheduleView: View {
+    @Environment(UserStore.self) private var userStore
+
     var body: some View {
         Group {
             Text("DutyScheduleView")
@@ -18,7 +20,7 @@ struct DutyScheduleView: View {
         .navigationDestination(for: DutyScheduleRoute.self) { route in
             switch route {
             case .createShift:
-                CreateShiftView()
+                CreateShiftView(userStore: userStore)
                     .toolbar(.hidden, for: .tabBar)
             }
         }
@@ -29,4 +31,5 @@ struct DutyScheduleView: View {
     NavigationStack {
         DutyScheduleView()
     }
+    .environment(UserStore(userService: MockUserService()))
 }
