@@ -15,4 +15,12 @@ nonisolated final class MockShiftService: ShiftServiceProtocol {
         
         self.shift = shift
     }
+    
+    func fetchShifts(companyId: String) async throws -> [Shift] {
+        if let error {
+            throw error
+        }
+        
+        return Shift.mockShifts
+    }
 }

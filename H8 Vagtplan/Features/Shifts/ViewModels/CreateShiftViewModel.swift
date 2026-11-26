@@ -14,7 +14,7 @@ final class CreateShiftViewModel {
     private let shiftService: ShiftServiceProtocol
     
     var date: Date = .now
-    var startTime: Date = Calendar.current.date(bySettingHour: 8, minute: 0, second: 0, of: .now) ?? .now
+    var startTime: Date = Calendar.current.date(bySettingHour: 8, minute: 45, second: 0, of: .now) ?? .now
     var endTime: Date = Calendar.current.date(bySettingHour: 14, minute: 0, second: 0, of: .now) ?? .now
     var assignment: ShiftAssignment = .employee
     var employeeId = ""

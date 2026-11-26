@@ -1,11 +1,47 @@
 import SwiftUI
 
 struct DutyScheduleView: View {
-    @Environment(UserStore.self) private var userStore
+    @State private var shiftStore: ShiftStore
+    @State private var dutyScheduleViewModel: DutyScheduleViewModel
+    
+    private let userStore: UserStore
+    
+    init(userStore: UserStore, shiftService: ShiftServiceProtocol = ShiftService()) {
+        let shiftStore = ShiftStore(shiftService: shiftService)
+        
+        _shiftStore = State(initialValue: shiftStore)
+        _dutyScheduleViewModel = State(initialValue: DutyScheduleViewModel(shiftStore: shiftStore, userStore: userStore))
+        self.userStore = userStore
+    }
 
     var body: some View {
-        Group {
-            Text("DutyScheduleView")
+        List {
+            switch dutyScheduleViewModel.loadingState {
+            case .loading:
+                ProgressView("Henter vagter...")
+                    .frame(maxWidth: .infinity, alignment: .center)
+            case .failed(let message):
+                ContentUnavailableView(
+                    "Fejl",
+                    systemImage: "exclamationmark.triangle",
+                    description: Text(message)
+                )
+            case .loaded(let shifts):
+                if shifts.isEmpty {
+                    ContentUnavailableView(
+                        "Ingen vagter",
+                        systemImage: "calendar",
+                        description: Text("Der er ingen vagter endnu.")
+                    )
+                } else {
+                    ForEach(shifts) { shift in
+                        Text("\(shift.startsAt.formatted(date: .omitted, time: .shortened)) - \(shift.endsAt.formatted(date: .omitted, time: .shortened))")
+                    }
+                }
+            }
+        }
+        .task {
+            await dutyScheduleViewModel.fetchShifts()
         }
         .navigationTitle("Vagtplan")
         .navigationBarTitleDisplayMode(.large)
@@ -27,10 +63,20 @@ struct DutyScheduleView: View {
     }
 }
 
-#Preview {
-    NavigationStack {
-        DutyScheduleView()
+#Preview("Success") {
+    let userStore = UserStore(userService: MockUserService())
+    userStore.currentUser = .mockOwnerUser
+    
+    return NavigationStack {
+        DutyScheduleView(userStore: userStore, shiftService: MockShiftService())
     }
-    .environment(UserStore(userService: MockUserService()))
-    .environment(EmployeeStore(employeeService: MockEmployeeService()))
+}
+
+#Preview("Failed") {
+    let userStore = UserStore(userService: MockUserService())
+    userStore.currentUser = .mockOwnerUser
+    
+    return NavigationStack {
+        DutyScheduleView(userStore: userStore, shiftService: MockShiftService(error: FirestoreError.unknown))
+    }
 }

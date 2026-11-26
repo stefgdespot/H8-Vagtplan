@@ -1,7 +1,7 @@
 import Foundation
 import FirebaseFirestore
 
-/// Står for at gemme vagter for virksomheden med Firebase Firestore.
+/// Står for at gemme vagter og hente vagter for virksomheden med Firebase Firestore.
 nonisolated final class ShiftService: ShiftServiceProtocol {
 
     /// Gemmer vagten som et dokument i virksomhedens shifts subcollection.
@@ -13,5 +13,10 @@ nonisolated final class ShiftService: ShiftServiceProtocol {
         } catch {
             throw FirestoreError(error: error)
         }
+    }
+    
+    /// Henter vagter fra en virksomhed.
+    func fetchShifts(companyId: String) async throws -> [Shift] {
+        []
     }
 }
