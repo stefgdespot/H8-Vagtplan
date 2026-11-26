@@ -2,6 +2,7 @@ import Foundation
 
 nonisolated final class MockShiftService: ShiftServiceProtocol {
     var error: Error?
+    var shift: Shift?
     
     init(error: Error? = nil) {
         self.error = error
@@ -11,5 +12,7 @@ nonisolated final class MockShiftService: ShiftServiceProtocol {
         if let error {
             throw error
         }
+        
+        self.shift = shift
     }
 }
