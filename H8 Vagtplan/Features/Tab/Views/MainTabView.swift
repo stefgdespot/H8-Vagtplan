@@ -4,14 +4,17 @@ struct MainTabView: View {
     @Environment(SessionStore.self) private var sessionStore
     
     @State private var companyStore: CompanyStore
+    @State private var employeeStore: EmployeeStore
     @State private var mainTabViewModel: MainTabViewModel
     
     private let userStore: UserStore
     
     init(userStore: UserStore, companyService: CompanyServiceProtocol = CompanyService()) {
         let companyStore = CompanyStore(companyService: companyService)
+        let employeeStore = EmployeeStore()
         _companyStore = State(initialValue: companyStore)
-        _mainTabViewModel = State(initialValue: MainTabViewModel(companyStore: companyStore, userStore: userStore))
+        _employeeStore = State(initialValue: employeeStore)
+        _mainTabViewModel = State(initialValue: MainTabViewModel(companyStore: companyStore, employeeStore: employeeStore, userStore: userStore))
         self.userStore = userStore
     }
     
@@ -26,7 +29,7 @@ struct MainTabView: View {
                 
                 Tab("Medarbejdere", systemImage: "person.2", value: .employeeList) {
                     NavigationStack {
-                        EmployeeListView(userStore: userStore)
+                        EmployeeListView(userStore: userStore, employeeStore: employeeStore)
                     }
                 }
             }
@@ -53,6 +56,7 @@ struct MainTabView: View {
         }
         .tint(.main)
         .environment(companyStore)
+        .environment(employeeStore)
         .onAppear {
             mainTabViewModel.selectedTab = userStore.currentUser?.role == .employee ? .myShifts : .dutySchedule
         }

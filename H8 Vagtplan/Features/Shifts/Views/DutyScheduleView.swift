@@ -32,4 +32,5 @@ struct DutyScheduleView: View {
         DutyScheduleView()
     }
     .environment(UserStore(userService: MockUserService()))
+    .environment(EmployeeStore(employeeService: MockEmployeeService()))
 }

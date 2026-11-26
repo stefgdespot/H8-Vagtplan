@@ -2,15 +2,16 @@ import SwiftUI
 
 struct EmployeeListView: View {
     @Environment(CompanyStore.self) private var companyStore
+    @Environment(EmployeeStore.self) private var employeeStore
     
     @State private var employeeListViewModel: EmployeeListViewModel
     
-    init(userStore: UserStore, employeeService: EmployeeServiceProtocol = EmployeeService()) {
-        _employeeListViewModel = State(initialValue: EmployeeListViewModel(userStore: userStore, employeeService: employeeService))
+    init(userStore: UserStore, employeeStore: EmployeeStore) {
+        _employeeListViewModel = State(initialValue: EmployeeListViewModel(userStore: userStore, employeeStore: employeeStore))
     }
     
     private var employeeCountText: String {
-        let count = employeeListViewModel.employees.count
+        let count = employeeStore.employees.count
         return count == 1 ? "1 medarbejder" : "\(count) medarbejdere"
     }
     
@@ -40,7 +41,7 @@ struct EmployeeListView: View {
                 }
             }
             
-            switch employeeListViewModel.loadingState {
+            switch employeeStore.loadingState {
             case .loading:
                 Section("Medarbejdere") {
                     ProgressView("Henter medarbejdere...")
@@ -78,9 +79,6 @@ struct EmployeeListView: View {
         }
         .navigationTitle("Medarbejdere")
         .navigationBarTitleDisplayMode(.large)
-        .task {
-            await employeeListViewModel.fetchEmployees()
-        }
     }
     
     private func errorCase(message: String) -> some View {
@@ -100,10 +98,13 @@ struct EmployeeListView: View {
     companyStore.company = .mockCompany
     companyStore.loadingState = .loaded(.mockCompany)
     
+    let employeeStore = EmployeeStore(employeeService: MockEmployeeService())
+    
     return NavigationStack {
-        EmployeeListView(userStore: userStore, employeeService: MockEmployeeService())
+        EmployeeListView(userStore: userStore, employeeStore: employeeStore)
     }
     .environment(companyStore)
+    .environment(employeeStore)
 }
 
 #Preview("Error") {
@@ -114,8 +115,11 @@ struct EmployeeListView: View {
     companyStore.company = .mockCompany
     companyStore.loadingState = .failed("Du har ikke adgang.")
     
+    let employeeStore = EmployeeStore(employeeService: MockEmployeeService(error: FirestoreError.unknown))
+    
     return NavigationStack {
-        EmployeeListView(userStore: userStore, employeeService: MockEmployeeService(error: FirestoreError.unknown))
+        EmployeeListView(userStore: userStore, employeeStore: employeeStore)
     }
     .environment(companyStore)
+    .environment(employeeStore)
 }

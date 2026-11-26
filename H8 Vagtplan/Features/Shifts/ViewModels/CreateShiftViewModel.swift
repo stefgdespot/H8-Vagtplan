@@ -17,7 +17,7 @@ final class CreateShiftViewModel {
     var startTime: Date = Calendar.current.date(bySettingHour: 8, minute: 0, second: 0, of: .now) ?? .now
     var endTime: Date = Calendar.current.date(bySettingHour: 14, minute: 0, second: 0, of: .now) ?? .now
     var assignment: ShiftAssignment = .employee
-    var employee = ""
+    var employeeId = ""
     
     var alert: AlertType?
     private(set) var isLoading = false
@@ -33,7 +33,7 @@ final class CreateShiftViewModel {
             return false
         }
         
-        if assignment == .employee && employee.isEmpty {
+        if assignment == .employee && employeeId.isEmpty {
             alert = .missingEmployee
             return false
         }
@@ -61,7 +61,7 @@ final class CreateShiftViewModel {
         let shift = Shift(
             startsAt: startsAt,
             endsAt: endsAt,
-            employeeId: assignment == .available ? nil : employee,
+            employeeId: assignment == .available ? nil : employeeId,
             status: assignment == .available ? .available : .assigned
         )
         

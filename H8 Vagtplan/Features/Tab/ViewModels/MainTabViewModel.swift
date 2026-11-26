@@ -5,16 +5,19 @@ import Foundation
 @Observable
 final class MainTabViewModel {
     private let companyStore: CompanyStore
+    private let employeeStore: EmployeeStore
     private let userStore: UserStore
     
     var selectedTab: TabItem = .dutySchedule
     
-    init(companyStore: CompanyStore, userStore: UserStore) {
+    init(companyStore: CompanyStore, employeeStore: EmployeeStore, userStore: UserStore) {
         self.companyStore = companyStore
+        self.employeeStore = employeeStore
         self.userStore = userStore
         
         Task {
             await fetchCompany()
+            await fetchEmployees()
         }
     }
     
@@ -24,8 +27,6 @@ final class MainTabViewModel {
             return
         }
         
-        companyStore.loadingState = .loading
-        
         do {
             try await companyStore.fetchCompany(companyId: companyId)
             
@@ -34,6 +35,20 @@ final class MainTabViewModel {
             }
         } catch {
             companyStore.loadingState = .failed(error.localizedDescription)
+        }
+    }
+    
+    func fetchEmployees() async {
+        guard let companyId = userStore.currentUser?.companyId else {
+            employeeStore.loadingState = .failed("Du er ikke tilmeldt en virksomhed.")
+            return
+        }
+        
+        do {
+            try await employeeStore.fetchEmployees(companyId: companyId)
+            employeeStore.loadingState = .loaded(employeeStore.employees)
+        } catch {
+            employeeStore.loadingState = .failed(error.localizedDescription)
         }
     }
 }

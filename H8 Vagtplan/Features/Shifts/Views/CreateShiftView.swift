@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CreateShiftView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(EmployeeStore.self) private var employeeStore
     
     @State private var createShiftViewModel: CreateShiftViewModel
     
@@ -31,13 +32,27 @@ struct CreateShiftView: View {
                 .labelsHidden()
 
                 if createShiftViewModel.assignment == .employee {
-                    Picker("Medarbejder", selection: $createShiftViewModel.employee) {
-                        ForEach(0 ... 5, id: \.self) { i in
-                            Text("John Doe")
-                                .tag(i)
+                    switch employeeStore.loadingState {
+                    case .loading:
+                        ProgressView()
+                    case .failed(let message):
+                        Text(message)
+                            .foregroundStyle(.secondary)
+                    case .loaded(let users):
+                        if users.isEmpty {
+                            Text("Der er ingen medarbejdere")
+                                .foregroundStyle(.secondary)
+                        } else {
+                            Picker("Medarbejder", selection: $createShiftViewModel.employeeId) {
+                                ForEach(users) { user in
+                                    Text(user.name)
+                                        .tag(user.id ?? "")
+                                }
+                            }
+                            .pickerStyle(.navigationLink)
+                            .tint(.main)
                         }
                     }
-                    .pickerStyle(.navigationLink)
                 }
             }
             .disabled(createShiftViewModel.isLoading)
@@ -87,16 +102,25 @@ struct CreateShiftView: View {
     let userStore = UserStore(userService: MockUserService())
     userStore.currentUser = .mockOwnerUser
 
+    let employeeStore = EmployeeStore(employeeService: MockEmployeeService())
+    employeeStore.employees = [.mockEmployeeUser]
+    employeeStore.loadingState = .loaded([.mockEmployeeUser])
+
     return NavigationStack {
         CreateShiftView(userStore: userStore, shiftService: MockShiftService())
     }
+    .environment(employeeStore)
 }
 
 #Preview("Error") {
     let userStore = UserStore(userService: MockUserService())
     userStore.currentUser = .mockOwnerUser
 
+    let employeeStore = EmployeeStore(employeeService: MockEmployeeService())
+    employeeStore.loadingState = .failed("Du har ikke adgang.")
+
     return NavigationStack {
         CreateShiftView(userStore: userStore, shiftService: MockShiftService(error: FirestoreError.unknown))
     }
+    .environment(employeeStore)
 }
