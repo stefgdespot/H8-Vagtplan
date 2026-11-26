@@ -1,4 +1,5 @@
 import Testing
+import Foundation
 @testable import H8_Vagtplan
 
 @MainActor
@@ -71,5 +72,24 @@ struct CreateShiftViewModelTests {
         #expect(vm.alert == nil)
         #expect(service.shift?.employeeId == nil)
         #expect(service.shift?.status == .available)
+    }
+
+    /// Unit test for at kaldet fejler når vagten ikke kan gemmes.
+    @Test("createShift fails when saving the shift fails")
+    func createShiftFailsWhenSavingTheShiftFails() async {
+        let userStore = UserStore(userService: MockUserService())
+        userStore.currentUser = .mockOwnerUser
+
+        let error = FirestoreError.unknown
+        let service = MockShiftService(error: error)
+        let vm = CreateShiftViewModel(userStore: userStore, shiftService: service)
+        vm.assignment = .employee
+        vm.employeeId = "employeeId"
+
+        let success = await vm.createShift()
+
+        #expect(!success)
+        #expect(vm.alert == .error(error.localizedDescription))
+        #expect(service.shift == nil)
     }
 }
