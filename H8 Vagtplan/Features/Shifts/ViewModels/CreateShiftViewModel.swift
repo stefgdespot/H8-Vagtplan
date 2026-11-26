@@ -5,6 +5,7 @@ import Foundation
 final class CreateShiftViewModel {
     enum AlertType: Identifiable, Hashable {
         case error(String)
+        case missingEmployee
         
         var id: Self { self }
     }
@@ -19,17 +20,27 @@ final class CreateShiftViewModel {
     var employee = ""
     
     var alert: AlertType?
+    private(set) var isLoading = false
     
     init(userStore: UserStore, shiftService: ShiftServiceProtocol = ShiftService()) {
         self.userStore = userStore
         self.shiftService = shiftService
     }
     
-    func createShift() async {
+    func createShift() async -> Bool {
         guard let companyId = userStore.currentUser?.companyId else {
             alert = .error("Du er ikke tilmeldt en virksomhed.")
-            return
+            return false
         }
+        
+        if assignment == .employee && employee.isEmpty {
+            alert = .missingEmployee
+            return false
+        }
+        
+        isLoading = true
+        
+        defer { isLoading = false }
         
         let calendar = Calendar.current
         
@@ -56,8 +67,10 @@ final class CreateShiftViewModel {
         
         do {
             try await shiftService.createShift(companyId: companyId, shift: shift)
+            return true
         } catch {
             alert = .error(error.localizedDescription)
+            return false
         }
     }
 }

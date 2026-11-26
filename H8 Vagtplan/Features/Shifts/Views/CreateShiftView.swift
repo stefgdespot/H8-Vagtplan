@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct CreateShiftView: View {
+    @Environment(\.dismiss) private var dismiss
+    
     @State private var createShiftViewModel: CreateShiftViewModel
     
     init(userStore: UserStore, shiftService: ShiftServiceProtocol = ShiftService()) {
@@ -15,6 +17,7 @@ struct CreateShiftView: View {
                 DatePicker("Sluttid", selection: $createShiftViewModel.endTime, displayedComponents: .hourAndMinute)
             }
             .tint(.main)
+            .disabled(createShiftViewModel.isLoading)
             
             Section("Hvem skal have vagten") {
                 Picker("", selection: $createShiftViewModel.assignment) {
@@ -37,29 +40,44 @@ struct CreateShiftView: View {
                     .pickerStyle(.navigationLink)
                 }
             }
+            .disabled(createShiftViewModel.isLoading)
             
             Button {
                 Task {
-                    await createShiftViewModel.createShift()
+                    if await createShiftViewModel.createShift() {
+                        dismiss()
+                    }
                 }
             } label: {
-                Text("Opret vagt")
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .frame(height: 50)
-                    .font(.headline)
-                    .background(.main, in: .capsule)
-                    .foregroundStyle(.white)
+                Group {
+                    if createShiftViewModel.isLoading {
+                        ProgressView()
+                            .tint(.white)
+                    } else {
+                        Text("Opret vagt")
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
+                .frame(height: 50)
+                .font(.headline)
+                .background(.main, in: .capsule)
+                .foregroundStyle(.white)
             }
             .buttonStyle(.plain)
+            .disabled(createShiftViewModel.isLoading)
             .listRowInsets(EdgeInsets())
             .listRowBackground(Color.clear)
         }
+        .scrollBounceBehavior(.basedOnSize)
         .navigationTitle("Opret vagt")
         .navigationBarTitleDisplayMode(.large)
+        .navigationBarBackButtonHidden(createShiftViewModel.isLoading)
         .alert(item: $createShiftViewModel.alert) { alert in
             switch alert {
             case .error(let message):
                 Alert(title: Text("Fejl"), message: Text(message))
+            case .missingEmployee:
+                Alert(title: Text("Vælg medarbejder"), message: Text("Du skal vælge en medarbejder til vagten."))
             }
         }
     }
