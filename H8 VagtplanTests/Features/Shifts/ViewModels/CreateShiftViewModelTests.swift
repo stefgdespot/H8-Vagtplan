@@ -54,4 +54,22 @@ struct CreateShiftViewModelTests {
         #expect(vm.alert == .error("Du er ikke tilmeldt en virksomhed."))
         #expect(service.shift == nil)
     }
+
+    /// Unit test for at en ledig vagt oprettes uden medarbejder.
+    @Test("createShift succeeds when assignment is available")
+    func createShiftSucceedsWhenAssignmentIsAvailable() async {
+        let userStore = UserStore(userService: MockUserService())
+        userStore.currentUser = .mockOwnerUser
+
+        let service = MockShiftService()
+        let vm = CreateShiftViewModel(userStore: userStore, shiftService: service)
+        vm.assignment = .available
+
+        let success = await vm.createShift()
+
+        #expect(success)
+        #expect(vm.alert == nil)
+        #expect(service.shift?.employeeId == nil)
+        #expect(service.shift?.status == .available)
+    }
 }
