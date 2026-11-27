@@ -60,4 +60,43 @@ struct EditShiftViewModelTests {
         #expect(vm.alert == .error(error.localizedDescription))
         #expect(shiftService.shift == nil)
     }
+    
+    /// Unit test for at vagten slettes og fjernes fra listen.
+    @Test("deleteShift succeeds and removes the shift from the store")
+    func deleteShiftSucceedsAndRemovesTheShiftFromTheStore() async {
+        let userStore = UserStore(userService: MockUserService())
+        userStore.currentUser = .mockOwnerUser
+
+        let shiftService = MockShiftService()
+        let shiftStore = ShiftStore(shiftService: shiftService)
+        shiftStore.shifts = [.mockShift]
+
+        let vm = EditShiftViewModel(shift: .mockShift, userStore: userStore, shiftStore: shiftStore, shiftService: shiftService)
+
+        let success = await vm.deleteShift(shift: .mockShift)
+
+        #expect(success)
+        #expect(vm.alert == nil)
+        #expect(shiftStore.shifts.isEmpty)
+    }
+
+    /// Unit test for at kaldet fejler når vagten ikke kan slettes.
+    @Test("deleteShift fails when deleting the shift fails")
+    func deleteShiftFailsWhenDeletingTheShiftFails() async {
+        let userStore = UserStore(userService: MockUserService())
+        userStore.currentUser = .mockOwnerUser
+
+        let error = FirestoreError.unknown
+        let shiftService = MockShiftService(error: error)
+        let shiftStore = ShiftStore(shiftService: shiftService)
+        shiftStore.shifts = [.mockShift]
+
+        let vm = EditShiftViewModel(shift: .mockShift, userStore: userStore, shiftStore: shiftStore, shiftService: shiftService)
+
+        let success = await vm.deleteShift(shift: .mockShift)
+
+        #expect(!success)
+        #expect(vm.alert == .error(error.localizedDescription))
+        #expect(shiftStore.shifts.count == 1)
+    }
 }
