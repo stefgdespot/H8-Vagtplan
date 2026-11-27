@@ -6,7 +6,7 @@ struct DutyScheduleRow: View {
     let shift: Shift
     
     var body: some View {
-        NavigationLink(value: DutyScheduleRoute.editShift) {
+        NavigationLink(value: DutyScheduleRoute.editShift(shift)) {
             HStack {
                 Text("\(shift.startsAt.formatted(date: .omitted, time: .shortened)) - \(shift.endsAt.formatted(date: .omitted, time: .shortened))")
                  

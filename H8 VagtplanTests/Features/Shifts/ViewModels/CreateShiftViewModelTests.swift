@@ -12,7 +12,7 @@ struct CreateShiftViewModelTests {
         userStore.currentUser = .mockOwnerUser
 
         let service = MockShiftService()
-        let vm = CreateShiftViewModel(userStore: userStore, shiftService: service)
+        let vm = CreateShiftViewModel(userStore: userStore, shiftStore: ShiftStore(shiftService: service), shiftService: service)
         vm.assignment = .employee
         vm.employeeId = "employeeId"
 
@@ -31,7 +31,7 @@ struct CreateShiftViewModelTests {
         userStore.currentUser = .mockOwnerUser
 
         let service = MockShiftService()
-        let vm = CreateShiftViewModel(userStore: userStore, shiftService: service)
+        let vm = CreateShiftViewModel(userStore: userStore, shiftStore: ShiftStore(shiftService: service), shiftService: service)
         vm.assignment = .employee
 
         let success = await vm.createShift()
@@ -45,7 +45,7 @@ struct CreateShiftViewModelTests {
     @Test("createShift fails when user has no company")
     func createShiftFailsWhenUserHasNoCompany() async {
         let service = MockShiftService()
-        let vm = CreateShiftViewModel(userStore: UserStore(userService: MockUserService()), shiftService: service)
+        let vm = CreateShiftViewModel(userStore: UserStore(userService: MockUserService()), shiftStore: ShiftStore(shiftService: service), shiftService: service)
         vm.assignment = .employee
         vm.employeeId = "employeeId"
 
@@ -63,7 +63,7 @@ struct CreateShiftViewModelTests {
         userStore.currentUser = .mockOwnerUser
 
         let service = MockShiftService()
-        let vm = CreateShiftViewModel(userStore: userStore, shiftService: service)
+        let vm = CreateShiftViewModel(userStore: userStore, shiftStore: ShiftStore(shiftService: service), shiftService: service)
         vm.assignment = .available
 
         let success = await vm.createShift()
@@ -82,7 +82,7 @@ struct CreateShiftViewModelTests {
 
         let error = FirestoreError.unknown
         let service = MockShiftService(error: error)
-        let vm = CreateShiftViewModel(userStore: userStore, shiftService: service)
+        let vm = CreateShiftViewModel(userStore: userStore, shiftStore: ShiftStore(shiftService: service), shiftService: service)
         vm.assignment = .employee
         vm.employeeId = "employeeId"
 

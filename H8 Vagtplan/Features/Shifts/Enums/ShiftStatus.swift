@@ -1,6 +1,6 @@
 import Foundation
 
-enum ShiftStatus: String, Codable, Equatable {
+enum ShiftStatus: String, Codable, Hashable {
     case assigned
     case available
     case absent

@@ -1,12 +1,12 @@
 import Foundation
 import FirebaseFirestore
 
-struct Shift: Identifiable, Codable {
+struct Shift: Identifiable, Codable, Hashable {
     @DocumentID var id: String?
-    let startsAt: Date
-    let endsAt: Date
-    let employeeId: String?
-    let status: ShiftStatus
+    var startsAt: Date
+    var endsAt: Date
+    var employeeId: String?
+    var status: ShiftStatus
     
     static let mockShift = Shift(
         id: "shiftId",
