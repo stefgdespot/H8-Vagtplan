@@ -69,7 +69,7 @@ struct EditShiftView: View {
                 }
             } label: {
                 Group {
-                    if viewModel.isLoading {
+                    if viewModel.isLoadingSave {
                         ProgressView()
                             .tint(.white)
                     } else {
@@ -86,6 +86,25 @@ struct EditShiftView: View {
             .disabled(viewModel.isLoading)
             .listRowInsets(EdgeInsets())
             .listRowBackground(Color.clear)
+            
+            Button {
+                viewModel.alert = .confirmDelete
+            } label: {
+                Group {
+                    if viewModel.isLoadingDelete {
+                        ProgressView()
+                            .tint(.primary)
+                    } else {
+                        Text("Slet vagt")
+                    }
+                }
+                .font(.headline)
+                .foregroundStyle(.red)
+            }
+            .buttonStyle(.plain)
+            .disabled(viewModel.isLoading)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .listRowBackground(Color.clear)
         }
         .scrollBounceBehavior(.basedOnSize)
         .navigationTitle("Rediger vagt")
@@ -97,6 +116,19 @@ struct EditShiftView: View {
                 Alert(title: Text("Fejl"), message: Text(message))
             case .missingEmployee:
                 Alert(title: Text("Vælg medarbejder"), message: Text("Du skal vælge en medarbejder til vagten."))
+            case .confirmDelete:
+                Alert(
+                    title: Text("Slet vagt"),
+                    message: Text("Er du sikker på du vil slette denne vagt?"),
+                    primaryButton: .destructive(Text("Slet")) {
+                        Task {
+                            if await viewModel.deleteShift(shift: shift) {
+                                dismiss()
+                            }
+                        }
+                    },
+                    secondaryButton: .cancel(Text("Annuller"))
+                )
             }
         }
     }
