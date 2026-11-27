@@ -44,6 +44,15 @@ final class EditShiftViewModel {
             shift.status = .assigned
         }
         
+        let calendar = Calendar.current
+        
+        shift.endsAt = calendar.date(
+            bySettingHour: calendar.component(.hour, from: shift.endsAt),
+            minute: calendar.component(.minute, from: shift.endsAt),
+            second: 0,
+            of: shift.startsAt
+        ) ?? shift.endsAt
+        
         isLoading = true
         
         defer { isLoading = false }
