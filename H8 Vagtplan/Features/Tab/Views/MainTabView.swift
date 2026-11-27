@@ -37,7 +37,7 @@ struct MainTabView: View {
             if userStore.currentUser?.role == .employee {
                 Tab("Mine vagter", systemImage: "calendar", value: .myShifts) {
                     NavigationStack {
-                        MyShiftsView()
+                        MyShiftsView(userStore: userStore)
                     }
                 }
                 

@@ -1,6 +1,12 @@
 import SwiftUI
 
 struct MyShiftsView: View {
+    @State private var viewModel: MyShiftsViewModel
+    
+    init(userStore: UserStore, shiftService: ShiftServiceProtocol = ShiftService()) {
+        _viewModel = State(initialValue: MyShiftsViewModel(userStore: userStore, shiftService: shiftService))
+    }
+    
     var body: some View {
         List {
             Section("Næste vagt") {
@@ -26,29 +32,55 @@ struct MyShiftsView: View {
                 }
             }
             
-            Section("tirsdag den 17. november 2026") {
-                HStack {
-                    Text("8:45 - 14:00")
-                    
-                    Spacer()
-                    
-                    Button {
-                        
-                    } label: {
-                        Text("Meld afbud")
-                            .foregroundStyle(.red)
+            switch viewModel.loadingState {
+            case .loading:
+                ProgressView("Henter vagter...")
+                    .frame(maxWidth: .infinity, alignment: .center)
+            case .failed(let message):
+                ContentUnavailableView(
+                    "Fejl",
+                    systemImage: "exclamationmark.triangle",
+                    description: Text(message)
+                )
+            case .loaded:
+                if viewModel.shifts.isEmpty {
+                    ContentUnavailableView(
+                        "Ingen vagter",
+                        systemImage: "calendar",
+                        description: Text("Du har ingen vagter endnu.")
+                    )
+                } else {
+                    ForEach(viewModel.shifts) { shift in
+                        Text(shift.status.rawValue)
                     }
-                    .buttonStyle(.plain)
                 }
             }
+        }
+        .refreshable {
+            await viewModel.refresh()
+        }
+        .task {
+            await viewModel.fetchEmployeeShifts()
         }
         .navigationTitle("Mine vagter")
         .navigationBarTitleDisplayMode(.large)
     }
 }
 
-#Preview {
-    NavigationStack {
-        MyShiftsView()
+#Preview("Success") {
+    let userStore = UserStore(userService: MockUserService())
+    userStore.currentUser = .mockEmployeeUser
+    
+    return NavigationStack {
+        MyShiftsView(userStore: userStore, shiftService: MockShiftService())
+    }
+}
+
+#Preview("Error") {
+    let userStore = UserStore(userService: MockUserService())
+    userStore.currentUser = .mockEmployeeUser
+    
+    return NavigationStack {
+        MyShiftsView(userStore: userStore, shiftService: MockShiftService(error: FirestoreError.unknown))
     }
 }
