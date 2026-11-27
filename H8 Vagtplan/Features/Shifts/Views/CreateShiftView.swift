@@ -17,6 +17,7 @@ struct CreateShiftView: View {
                 DatePicker("Starttid", selection: $createShiftViewModel.startTime, displayedComponents: .hourAndMinute)
                 DatePicker("Sluttid", selection: $createShiftViewModel.endTime, displayedComponents: .hourAndMinute)
             }
+            .environment(\.locale, Locale(identifier: "da_DK"))
             .tint(.main)
             .disabled(createShiftViewModel.isLoading)
             

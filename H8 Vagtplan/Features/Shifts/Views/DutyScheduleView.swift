@@ -1,10 +1,11 @@
 import SwiftUI
 
+/// Står for at vise skærmen for Vagtplan (chef).
 struct DutyScheduleView: View {
     @Environment(EmployeeStore.self) private var employeeStore
     
     @State private var shiftStore: ShiftStore
-    @State private var dutyScheduleViewModel: DutyScheduleViewModel
+    @State private var viewModel: DutyScheduleViewModel
     
     private let userStore: UserStore
     
@@ -12,13 +13,13 @@ struct DutyScheduleView: View {
         let shiftStore = ShiftStore(shiftService: shiftService)
         
         _shiftStore = State(initialValue: shiftStore)
-        _dutyScheduleViewModel = State(initialValue: DutyScheduleViewModel(shiftStore: shiftStore, userStore: userStore))
+        _viewModel = State(initialValue: DutyScheduleViewModel(shiftStore: shiftStore, userStore: userStore))
         self.userStore = userStore
     }
 
     var body: some View {
         List {
-            switch dutyScheduleViewModel.loadingState {
+            switch viewModel.loadingState {
             case .loading:
                 ProgressView("Henter vagter...")
                     .frame(maxWidth: .infinity, alignment: .center)
@@ -36,30 +37,27 @@ struct DutyScheduleView: View {
                         description: Text("Der er ingen vagter endnu.")
                     )
                 } else {
-                    ForEach(shifts) { shift in
-                        HStack {
-                            Text("\(shift.startsAt.formatted(date: .omitted, time: .shortened)) - \(shift.endsAt.formatted(date: .omitted, time: .shortened))")
-                            
-                            Spacer()
-                            
-                            switch shift.status {
-                            case .assigned:
-                                employeeName(shift: shift)
-                                    .foregroundStyle(.gray)
-                            case .available:
-                                Text("Ledig")
-                                    .foregroundStyle(.green)
-                            case .absent:
-                                employeeName(shift: shift)
-                                    .foregroundStyle(.red)
+                    // Grupper vagterne pr dag
+                    let days = Dictionary(grouping: shifts) { shift in
+                        Calendar.current.startOfDay(for: shift.startsAt)
+                    }
+                    
+                    // Vis dagene i rækkefølge
+                    ForEach(days.keys.sorted(), id: \.self) { day in
+                        Section(day.formatted(.dateTime.weekday(.wide).day().month(.wide).year().locale(Locale(identifier: "da_DK")))) {
+                            ForEach(days[day] ?? []) { shift in
+                                DutyScheduleRow(shift: shift)
                             }
                         }
                     }
                 }
             }
         }
+        .refreshable {
+            await viewModel.refresh()
+        }
         .task {
-            await dutyScheduleViewModel.fetchShifts()
+            await viewModel.fetchShifts()
         }
         .navigationTitle("Vagtplan")
         .navigationBarTitleDisplayMode(.large)
@@ -76,21 +74,9 @@ struct DutyScheduleView: View {
             case .createShift:
                 CreateShiftView(userStore: userStore)
                     .toolbar(.hidden, for: .tabBar)
+            case .editShift:
+                EmptyView()
             }
-        }
-    }
-    
-    @ViewBuilder
-    private func employeeName(shift: Shift) -> some View {
-        let name = employeeStore.employees.first { $0.id == shift.employeeId }?.name ?? "Ingen medarbejder"
-        
-        switch employeeStore.loadingState {
-        case .loading:
-            ProgressView()
-        case .failed(let message):
-            Text(message)
-        case .loaded:
-            Text(shift.status == .absent ? "Afbud - \(name)" : name)
         }
     }
 }
