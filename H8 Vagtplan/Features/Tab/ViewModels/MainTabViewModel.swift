@@ -29,10 +29,7 @@ final class MainTabViewModel {
         
         do {
             try await companyStore.fetchCompany(companyId: companyId)
-            
-            if let company = companyStore.company {
-                companyStore.loadingState = .loaded
-            }
+            companyStore.loadingState = .loaded
         } catch {
             companyStore.loadingState = .failed(error.localizedDescription)
         }

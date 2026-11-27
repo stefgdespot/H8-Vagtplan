@@ -78,7 +78,7 @@ struct DutyScheduleView: View {
                 CreateShiftView(userStore: userStore, shiftStore: shiftStore)
                     .toolbar(.hidden, for: .tabBar)
             case .editShift(let shift):
-                EditShiftView(shift: shift, userStore: userStore)
+                EditShiftView(shift: shift, userStore: userStore, shiftStore: shiftStore)
                     .toolbar(.hidden, for: .tabBar)
             }
         }

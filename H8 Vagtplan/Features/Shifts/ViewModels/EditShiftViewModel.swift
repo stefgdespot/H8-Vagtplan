@@ -11,6 +11,7 @@ final class EditShiftViewModel {
     }
     
     private let userStore: UserStore
+    private let shiftStore: ShiftStore
     private let shiftService: ShiftServiceProtocol
     
     var assignment: ShiftAssignment
@@ -18,8 +19,9 @@ final class EditShiftViewModel {
     private(set) var isLoading = false
     var alert: AlertType?
     
-    init(shift: Shift, userStore: UserStore, shiftService: ShiftServiceProtocol = ShiftService()) {
+    init(shift: Shift, userStore: UserStore, shiftStore: ShiftStore, shiftService: ShiftServiceProtocol = ShiftService()) {
         self.userStore = userStore
+        self.shiftStore = shiftStore
         self.shiftService = shiftService
         assignment = shift.status == .available ? .available : .employee
     }
@@ -48,6 +50,11 @@ final class EditShiftViewModel {
         
         do {
             try await shiftService.editShift(companyId: companyId, shift: shift)
+            
+            if let index = shiftStore.shifts.firstIndex(where: { $0.id == shift.id }) {
+                shiftStore.shifts[index] = shift
+            }
+            
             return true
         } catch {
             alert = .error(error.localizedDescription)

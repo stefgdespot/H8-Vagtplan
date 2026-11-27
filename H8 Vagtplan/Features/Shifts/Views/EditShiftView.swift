@@ -8,8 +8,8 @@ struct EditShiftView: View {
     
     @State private var shift: Shift
     
-    init(shift: Shift, userStore: UserStore, shiftService: ShiftServiceProtocol = ShiftService()) {
-        _viewModel = State(initialValue: EditShiftViewModel(shift: shift, userStore: userStore, shiftService: shiftService))
+    init(shift: Shift, userStore: UserStore, shiftStore: ShiftStore, shiftService: ShiftServiceProtocol = ShiftService()) {
+        _viewModel = State(initialValue: EditShiftViewModel(shift: shift, userStore: userStore, shiftStore: shiftStore, shiftService: shiftService))
         _shift = State(initialValue: shift)
     }
     
@@ -111,7 +111,7 @@ struct EditShiftView: View {
     employeeStore.loadingState = .loaded
 
     return NavigationStack {
-        EditShiftView(shift: .mockShift, userStore: userStore, shiftService: MockShiftService())
+        EditShiftView(shift: .mockShift, userStore: userStore, shiftStore: ShiftStore(shiftService: MockShiftService()), shiftService: MockShiftService())
     }
     .environment(employeeStore)
 }
@@ -124,7 +124,7 @@ struct EditShiftView: View {
     employeeStore.loadingState = .failed("Du har ikke adgang.")
 
     return NavigationStack {
-        EditShiftView(shift: .mockShift, userStore: userStore, shiftService: MockShiftService(error: FirestoreError.unknown))
+        EditShiftView(shift: .mockShift, userStore: userStore, shiftStore: ShiftStore(shiftService: MockShiftService(error: FirestoreError.unknown)), shiftService: MockShiftService(error: FirestoreError.unknown))
     }
     .environment(employeeStore)
 }
