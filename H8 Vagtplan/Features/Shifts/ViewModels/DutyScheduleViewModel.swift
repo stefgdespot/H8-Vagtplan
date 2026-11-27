@@ -6,7 +6,7 @@ final class DutyScheduleViewModel {
     private let shiftStore: ShiftStore
     private let userStore: UserStore
     
-    private(set) var loadingState: LoadingState<[Shift]> = .loading
+    private(set) var loadingState: LoadingState = .loading
     private(set) var hasLoaded = false
     
     init(shiftStore: ShiftStore, userStore: UserStore) {
@@ -24,7 +24,7 @@ final class DutyScheduleViewModel {
         
         do {
             try await shiftStore.fetchShifts(companyId: companyId)
-            loadingState = .loaded(shiftStore.shifts)
+            loadingState = .loaded
             hasLoaded = true
         } catch {
             loadingState = .failed(error.localizedDescription)

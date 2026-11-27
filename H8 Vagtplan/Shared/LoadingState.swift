@@ -1,7 +1,7 @@
 import Foundation
 
-enum LoadingState<T> {
+enum LoadingState {
     case loading
-    case loaded(T)
+    case loaded
     case failed(String)
 }

@@ -24,19 +24,21 @@ struct EmployeeListView: View {
                         .frame(maxWidth: .infinity, alignment: .center)
                 case .failed(let message):
                     errorCase(message: message)
-                case .loaded(let company):
-                    HStack {
-                        Text(company.inviteCode)
-                            .font(.headline)
-                        
-                        Spacer()
-                        
-                        ShareLink(item: company.inviteCode) {
-                            Text("Del kode")
+                case .loaded:
+                    if let company = companyStore.company {
+                        HStack {
+                            Text(company.inviteCode)
                                 .font(.headline)
-                                .foregroundStyle(.main)
+                            
+                            Spacer()
+                            
+                            ShareLink(item: company.inviteCode) {
+                                Text("Del kode")
+                                    .font(.headline)
+                                    .foregroundStyle(.main)
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
                     }
                 }
             }
@@ -51,16 +53,16 @@ struct EmployeeListView: View {
                 Section("Medarbejdere") {
                     errorCase(message: message)
                 }
-            case .loaded(let users):
+            case .loaded:
                 Section(employeeCountText) {
-                    if users.isEmpty {
+                    if employeeStore.employees.isEmpty {
                         ContentUnavailableView(
                             "Ingen medarbejdere",
                             systemImage: "person.2.slash",
                             description: Text("Der er ingen medarbejdere i virksomheden endnu.")
                         )
                     } else {
-                        ForEach(users) { user in
+                        ForEach(employeeStore.employees) { user in
                             VStack(alignment: .leading) {
                                 Text(user.name)
                                     .font(.headline)
@@ -96,7 +98,7 @@ struct EmployeeListView: View {
     
     let companyStore = CompanyStore(companyService: MockCompanyService())
     companyStore.company = .mockCompany
-    companyStore.loadingState = .loaded(.mockCompany)
+    companyStore.loadingState = .loaded
     
     let employeeStore = EmployeeStore(employeeService: MockEmployeeService())
     

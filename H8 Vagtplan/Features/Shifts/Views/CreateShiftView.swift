@@ -6,8 +6,8 @@ struct CreateShiftView: View {
     
     @State private var createShiftViewModel: CreateShiftViewModel
     
-    init(userStore: UserStore, shiftService: ShiftServiceProtocol = ShiftService()) {
-        _createShiftViewModel = State(initialValue: CreateShiftViewModel(userStore: userStore, shiftService: shiftService))
+    init(userStore: UserStore, shiftStore: ShiftStore, shiftService: ShiftServiceProtocol = ShiftService()) {
+        _createShiftViewModel = State(initialValue: CreateShiftViewModel(userStore: userStore, shiftStore: shiftStore, shiftService: shiftService))
     }
     
     var body: some View {
@@ -39,13 +39,13 @@ struct CreateShiftView: View {
                     case .failed(let message):
                         Text(message)
                             .foregroundStyle(.secondary)
-                    case .loaded(let users):
-                        if users.isEmpty {
+                    case .loaded:
+                        if employeeStore.employees.isEmpty {
                             Text("Der er ingen medarbejdere")
                                 .foregroundStyle(.secondary)
                         } else {
                             Picker("Medarbejder", selection: $createShiftViewModel.employeeId) {
-                                ForEach(users) { user in
+                                ForEach(employeeStore.employees) { user in
                                     Text(user.name)
                                         .tag(user.id ?? "")
                                 }
@@ -105,10 +105,12 @@ struct CreateShiftView: View {
 
     let employeeStore = EmployeeStore(employeeService: MockEmployeeService())
     employeeStore.employees = [.mockEmployeeUser]
-    employeeStore.loadingState = .loaded([.mockEmployeeUser])
+    employeeStore.loadingState = .loaded
+    
+    let shiftService = MockShiftService()
 
     return NavigationStack {
-        CreateShiftView(userStore: userStore, shiftService: MockShiftService())
+        CreateShiftView(userStore: userStore, shiftStore: ShiftStore(shiftService: shiftService), shiftService: shiftService)
     }
     .environment(employeeStore)
 }
@@ -119,9 +121,11 @@ struct CreateShiftView: View {
 
     let employeeStore = EmployeeStore(employeeService: MockEmployeeService())
     employeeStore.loadingState = .failed("Du har ikke adgang.")
+    
+    let shiftService = MockShiftService(error: FirestoreError.unknown)
 
     return NavigationStack {
-        CreateShiftView(userStore: userStore, shiftService: MockShiftService(error: FirestoreError.unknown))
+        CreateShiftView(userStore: userStore, shiftStore: ShiftStore(shiftService: shiftService), shiftService: shiftService)
     }
     .environment(employeeStore)
 }

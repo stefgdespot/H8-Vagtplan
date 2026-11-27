@@ -44,7 +44,7 @@ struct DutyScheduleRow: View {
 
 #Preview {
     let employeeStore = EmployeeStore(employeeService: MockEmployeeService())
-    employeeStore.loadingState = .loaded([.mockEmployeeUser])
+    employeeStore.loadingState = .loaded
     employeeStore.employees = [.mockEmployeeUser]
     
     return DutyScheduleRow(shift: .mockShift)

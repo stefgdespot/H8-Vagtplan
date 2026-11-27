@@ -29,8 +29,11 @@ struct DutyScheduleView: View {
                     systemImage: "exclamationmark.triangle",
                     description: Text(message)
                 )
-            case .loaded(let shifts):
-                if shifts.isEmpty {
+            case .loaded:
+                // Vis kun vagter der ikke er slut
+                let upcomingShifts = shiftStore.shifts.filter { $0.endsAt > .now }
+                
+                if upcomingShifts.isEmpty {
                     ContentUnavailableView(
                         "Ingen vagter",
                         systemImage: "calendar",
@@ -38,7 +41,7 @@ struct DutyScheduleView: View {
                     )
                 } else {
                     // Grupper vagterne pr dag
-                    let days = Dictionary(grouping: shifts) { shift in
+                    let days = Dictionary(grouping: upcomingShifts) { shift in
                         Calendar.current.startOfDay(for: shift.startsAt)
                     }
                     
@@ -72,7 +75,7 @@ struct DutyScheduleView: View {
         .navigationDestination(for: DutyScheduleRoute.self) { route in
             switch route {
             case .createShift:
-                CreateShiftView(userStore: userStore)
+                CreateShiftView(userStore: userStore, shiftStore: shiftStore)
                     .toolbar(.hidden, for: .tabBar)
             case .editShift:
                 EmptyView()
@@ -86,7 +89,7 @@ struct DutyScheduleView: View {
     userStore.currentUser = .mockOwnerUser
     let employeeStore = EmployeeStore(employeeService: MockEmployeeService())
     employeeStore.employees = [.mockEmployeeUser]
-    employeeStore.loadingState = .loaded([.mockEmployeeUser])
+    employeeStore.loadingState = .loaded
     
     return NavigationStack {
         DutyScheduleView(userStore: userStore, shiftService: MockShiftService())
