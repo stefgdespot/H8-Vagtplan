@@ -7,7 +7,7 @@ final class CompanyStore {
     private let companyService: CompanyServiceProtocol
     
     var company: Company?
-    var loadingState: LoadingState<Company> = .loading
+    var loadingState: LoadingState = .loading
     
     init(companyService: CompanyServiceProtocol = CompanyService()) {
         self.companyService = companyService

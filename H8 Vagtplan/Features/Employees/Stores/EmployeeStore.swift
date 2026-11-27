@@ -7,7 +7,7 @@ final class EmployeeStore {
     private let employeeService: EmployeeServiceProtocol
     
     var employees: [User] = []
-    var loadingState: LoadingState<[User]> = .loading
+    var loadingState: LoadingState = .loading
     
     init(employeeService: EmployeeServiceProtocol = EmployeeService()) {
         self.employeeService = employeeService

@@ -31,7 +31,7 @@ final class MainTabViewModel {
             try await companyStore.fetchCompany(companyId: companyId)
             
             if let company = companyStore.company {
-                companyStore.loadingState = .loaded(company)
+                companyStore.loadingState = .loaded
             }
         } catch {
             companyStore.loadingState = .failed(error.localizedDescription)
@@ -46,7 +46,7 @@ final class MainTabViewModel {
         
         do {
             try await employeeStore.fetchEmployees(companyId: companyId)
-            employeeStore.loadingState = .loaded(employeeStore.employees)
+            employeeStore.loadingState = .loaded
         } catch {
             employeeStore.loadingState = .failed(error.localizedDescription)
         }

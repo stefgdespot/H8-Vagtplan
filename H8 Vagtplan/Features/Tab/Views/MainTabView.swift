@@ -23,7 +23,7 @@ struct MainTabView: View {
             if userStore.currentUser?.role == .owner {
                 Tab("Vagtplan", systemImage: "calendar", value: .dutySchedule) {
                     NavigationStack {
-                        DutyScheduleView()
+                        DutyScheduleView(userStore: userStore)
                     }
                 }
                 

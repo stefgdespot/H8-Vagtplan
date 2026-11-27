@@ -20,7 +20,7 @@ final class EmployeeListViewModel {
         
         do {
             try await employeeStore.fetchEmployees(companyId: companyId)
-            employeeStore.loadingState = .loaded(employeeStore.employees)
+            employeeStore.loadingState = .loaded
         } catch {
             employeeStore.loadingState = .failed(error.localizedDescription)
         }

@@ -11,10 +11,11 @@ final class CreateShiftViewModel {
     }
     
     private let userStore: UserStore
+    private let shiftStore: ShiftStore
     private let shiftService: ShiftServiceProtocol
     
     var date: Date = .now
-    var startTime: Date = Calendar.current.date(bySettingHour: 8, minute: 0, second: 0, of: .now) ?? .now
+    var startTime: Date = Calendar.current.date(bySettingHour: 8, minute: 45, second: 0, of: .now) ?? .now
     var endTime: Date = Calendar.current.date(bySettingHour: 14, minute: 0, second: 0, of: .now) ?? .now
     var assignment: ShiftAssignment = .employee
     var employeeId = ""
@@ -22,8 +23,9 @@ final class CreateShiftViewModel {
     var alert: AlertType?
     private(set) var isLoading = false
     
-    init(userStore: UserStore, shiftService: ShiftServiceProtocol = ShiftService()) {
+    init(userStore: UserStore, shiftStore: ShiftStore, shiftService: ShiftServiceProtocol = ShiftService()) {
         self.userStore = userStore
+        self.shiftStore = shiftStore
         self.shiftService = shiftService
     }
     
@@ -67,6 +69,7 @@ final class CreateShiftViewModel {
         
         do {
             try await shiftService.createShift(companyId: companyId, shift: shift)
+            shiftStore.shifts.append(shift)
             return true
         } catch {
             alert = .error(error.localizedDescription)
