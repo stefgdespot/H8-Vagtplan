@@ -17,6 +17,14 @@ nonisolated final class ShiftService: ShiftServiceProtocol {
     
     /// Henter vagter fra en virksomhed.
     func fetchShifts(companyId: String) async throws -> [Shift] {
-        []
+        do {
+            let snapshot = try await Firestore.firestore().collection("companies").document(companyId).collection("shifts").getDocuments()
+            
+            return try snapshot.documents.map { document in
+                try document.data(as: Shift.self)
+            }
+        } catch {
+            throw FirestoreError(error: error)
+        }
     }
 }

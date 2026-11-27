@@ -18,9 +18,9 @@ struct Shift: Identifiable, Codable {
     
     static let mockShifts: [Shift] = [
         .init(id: "shiftId1", startsAt: mockShift.startsAt, endsAt: mockShift.endsAt, employeeId: "employeeId", status: .assigned),
-        .init(id: "shiftId2", startsAt: mockShift.startsAt, endsAt: mockShift.endsAt, employeeId: "employeeId", status: .assigned),
-        .init(id: "shiftId3", startsAt: mockShift.startsAt, endsAt: mockShift.endsAt, employeeId: "employeeId", status: .assigned),
+        .init(id: "shiftId2", startsAt: mockShift.startsAt, endsAt: mockShift.endsAt, employeeId: "employeeId", status: .available),
+        .init(id: "shiftId3", startsAt: mockShift.startsAt, endsAt: mockShift.endsAt, employeeId: "employeeId", status: .absent),
         .init(id: "shiftId4", startsAt: mockShift.startsAt, endsAt: mockShift.endsAt, employeeId: "employeeId", status: .assigned),
-        .init(id: "shiftId5", startsAt: mockShift.startsAt, endsAt: mockShift.endsAt, employeeId: "employeeId", status: .assigned)
+        .init(id: "shiftId5", startsAt: mockShift.startsAt, endsAt: mockShift.endsAt, employeeId: "employeeId", status: .available)
     ]
 }
