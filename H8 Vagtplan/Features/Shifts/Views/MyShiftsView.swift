@@ -43,15 +43,28 @@ struct MyShiftsView: View {
                     description: Text(message)
                 )
             case .loaded:
-                if viewModel.shifts.isEmpty {
+                // Vis kun vagter der ikke er slut
+                let upcomingShifts = viewModel.shifts.filter { $0.endsAt > .now }
+                
+                if upcomingShifts.isEmpty {
                     ContentUnavailableView(
                         "Ingen vagter",
                         systemImage: "calendar",
                         description: Text("Du har ingen vagter endnu.")
                     )
                 } else {
-                    ForEach(viewModel.shifts) { shift in
-                        Text(shift.status.rawValue)
+                    // Grupper vagterne pr dag
+                    let days = Dictionary(grouping: upcomingShifts) { shift in
+                        Calendar.current.startOfDay(for: shift.startsAt)
+                    }
+                    
+                    // Vis dagene i rækkefølge
+                    ForEach(days.keys.sorted(), id: \.self) { day in
+                        Section(day.formatted(.dateTime.weekday(.wide).day().month(.wide).year().locale(Locale(identifier: "da_DK")))) {
+                            ForEach(days[day] ?? []) { shift in
+                                Text(shift.status.rawValue)
+                            }
+                        }
                     }
                 }
             }
