@@ -26,4 +26,12 @@ nonisolated final class MockShiftService: ShiftServiceProtocol {
         
         return Shift.mockShifts
     }
+    
+    func editShift(companyId: String, shift: Shift) async throws {
+        if let error {
+            throw error
+        }
+        
+        self.shift = shift
+    }
 }

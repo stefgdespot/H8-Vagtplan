@@ -1,7 +1,7 @@
 import Foundation
 
 /// Står for navigation for Vagtplan.
-enum DutyScheduleRoute {
+enum DutyScheduleRoute: Hashable, Equatable {
     case createShift
-    case editShift
+    case editShift(Shift)
 }
