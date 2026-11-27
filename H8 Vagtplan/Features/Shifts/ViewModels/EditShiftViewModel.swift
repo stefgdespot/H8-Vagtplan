@@ -37,6 +37,9 @@ final class EditShiftViewModel {
         if assignment == .available {
             shift.status = .available
             shift.employeeId = nil
+        } else if shift.employeeId == nil || (shift.employeeId ?? "").isEmpty  {
+            alert = .missingEmployee
+            return false
         } else if shift.employeeId == nil {
             alert = .missingEmployee
             return false
