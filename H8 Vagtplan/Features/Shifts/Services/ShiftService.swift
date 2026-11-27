@@ -30,6 +30,16 @@ nonisolated final class ShiftService: ShiftServiceProtocol {
     
     /// Redigere en vagt.
     func editShift(companyId: String, shift: Shift) async throws {
+        guard let shiftId = shift.id else {
+            throw FirestoreError.unknown
+        }
         
+        do {
+            let data = try Firestore.Encoder().encode(shift)
+            
+            try await Firestore.firestore().collection("companies").document(companyId).collection("shifts").document(shiftId).updateData(data)
+        } catch {
+            throw FirestoreError(error: error)
+        }
     }
 }
